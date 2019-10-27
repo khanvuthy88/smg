@@ -1,0 +1,185 @@
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="smg_create_user.list">
+      <field name="name">smg_create_user list</field>
+      <field name="model">smg.user.info</field>
+      <field name="arch" type="xml">
+        <tree string="User List">
+          <field name="name"/>
+          <field name="employee_id"/>
+          <field name="telegram_id"/>
+          <field name="start_date"/>
+          <field name="company_name"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="smg_create_user_form">
+      <field name="name">smg_create_user form</field>
+      <field name="model">smg.user.info</field>
+      <field name="arch" type="xml">
+        <form string="User list">
+          <header>
+            <button  name="view_user_ticket" type="object" string="View Ticket" class="oe_highlight" attrs="{'invisible':[('has_ticket', '=', False)]}"/>
+          </header>
+          <sheet>
+            <div class="oe_title">
+                <label for="name" class="oe_edit_only"/>
+                <h1>
+                    <field name="name" placeholder="Employee's Name" required="True"/>
+                </h1>
+            </div>
+            <group>
+              <group string="Personal Info">
+                <field name="employee_id"/>
+                <field name="first_name"/>
+                <field name="last_name"/>
+                <field name="employee_id_number"/>
+                <field name="telegram_id"/>
+                <field name="start_date"/>
+              </group>
+              <group string="Manager info">
+                <field name="company_name"/>
+                <field name="department"/>
+                <field name="position"/>
+                <field name="manager"/>
+                <field name="has_ticket" invisible="1"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Create User">
+                <header>
+                      <button class="btn-primary" string="REQ. Create User" type="object" name="requested_by_hr" attrs="{'invisible': ['|','|',('it_progress_state', '=', 'requested_by_hr'),('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
+                      <button class="btn-primary" string="Completed" type="object" name="precessed_by_it" attrs="{'invisible':['|',('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
+                      <button class="btn-primary" string="Completed HR" type="object" name="completed_by_hr" attrs="{'invisible':[('it_progress_state','=','done')]}"/>
+                      <field name="it_progress_state" widget="statusbar"/>
+                    </header>
+                <group>
+                  <field name="username" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
+                  <field name="initial_password" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
+                  <field name="initial_email" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
+                </group>
+              </page>
+              <page string="Odoo">
+                <group>
+                  <header>
+                    <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state"/>
+                    <field name="odoo_progress_state" widget="statusbar"/>
+                  </header>
+                </group>
+                <group>
+                  <group string="General">
+                    <field name="odoo_user_for"/>
+                    <field name="odoo_requested_by"/>
+                    <field name="odoo_email_address"/>
+                  </group>
+                  <group string="Odoo">
+                    <field name="odoo_username_login"/>
+                    <field name="odoo_user_password"/>
+                  </group>
+                </group>
+              </page>
+              <page string="Att Card">
+                <group>
+                  <field name="description"/>
+                  <field name="attendance_card_create"/>
+                </group>
+              </page>
+              <page string="Drive Access">
+                <group>
+                  <header>
+                    <field name="drive_progress_state" widget="statusbar"/>
+                  </header>
+                </group>
+                <group>
+                  <group string="Drive I permission">
+                    <field name="drive_i_permission_read"/>
+                    <field name="drive_i_permission_write"/>
+                    <field name="drive_i_permission_read_write"/>
+                  </group>
+                  <group string="Drive P Permission">
+                    <field name="drive_p_permission_read"/>
+                    <field name="drive_p_permission_write"/>
+                    <field name="drive_p_permission_read_write"/>
+                  </group>
+                </group>
+
+                <group>
+                  <group string="Drive Z Permission">
+                    <field name="drive_z_permission_read"/>
+                    <field name="drive_z_permission_write"/>
+                    <field name="drive_z_permission_read_write"/>
+                  </group>
+                  <group string="Remark">
+                    <field name="drive_note"/>
+                  </group>
+                </group>
+              </page>
+              <page string="Account">
+                <header>
+
+                  <field name="account_progress_state" widget="statusbar"/>
+                </header>
+                <group>
+                  <field name="sage_access"/>
+                  <field name="quickbook"/>
+                  <field name="peachtree"/>
+                  <field name="account_remark"/>
+                </group>
+              </page>
+            </notebook>
+          </sheet>
+          <div class="oe_chatter">
+              <field name="message_follower_ids" widget="mail_followers"/>
+              <field name="activity_ids" widget="mail_activity"/>
+              <field name="message_ids" widget="mail_thread"/>
+          </div>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="smg_create_user_action_window">
+      <field name="name">New employee process flow</field>
+      <field name="res_model">smg.user.info</field>
+      <field name="res_mode">tree,form</field>
+    </record>
+
+    <record model="ir.ui.view" id="smg_create_user_employee">
+      <field name="name">smg_create_user_employee</field>
+      <field name="model">hr.employee</field>
+      <field name="inherit_id" ref="hr.view_employee_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//div[@name='button_box']" position="inside">
+          <button name="return_action_to_open"
+                  type="object"
+                  class="oe_stat_button"
+                  icon="fa-book"
+                  string="IT form"
+                  context="{'xml_id':'smg_create_user_action_window'}"
+                  help="show the contract for this vehicle"/>
+        </xpath>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="smg_create_user_ticket">
+      <field name="name">smg_create_user_ticket</field>
+      <field name="model">helpdesk.ticket</field>
+      <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='partner_id']" position="before">
+          <field name="create_user_info" invisible="1"/>
+        </xpath>
+        <xpath expr="//button[@name='assign_ticket_to_self'][1]" position="after">
+          <button name="view_create_user_info"
+                  type="object"
+                  class="oe_highlight"
+                  attrs="{'invisible':[('create_user_info','=',False)]}"
+                  string="View create user info"/>
+        </xpath>
+      </field>
+    </record>
+
+
+  </data>
+</odoo>
