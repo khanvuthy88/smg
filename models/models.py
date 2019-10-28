@@ -87,14 +87,14 @@ class SMGUserInfo(models.Model):
         # Add employee and his manager to follower but to add follower is possible only partner (res.partner) and user(
         # res.user) and hr.employee relation with res.partner with field : Private Address (address_home_id)
 
-        # partner_ids = []
-        # employee = self.env['hr.employee'].search([('id', '=', vals['employee_id'])])
-        # partner_ids.append(employee.id)
-        # if 'manager' in vals:
-        #     manager = self.env['hr.employee'].search([('id', '=', vals['manager'])])
-        #     partner_ids.append(manager.id)
+        partner_ids = []
+        employee = self.env['hr.employee'].search([('id', '=', vals['employee_id'])])
+        partner_ids.append(employee.address_home_id.id)
+        if 'manager' in vals:
+            manager = self.env['hr.employee'].search([('id', '=', vals['manager'])])
+            partner_ids.append(manager.address_home_id.id)
         user = super(SMGUserInfo, self).create(vals)
-        # user.message_subscribe(partner_ids=partner_ids)
+        user.message_subscribe(partner_ids=partner_ids)
         return user
 
     @api.depends('ticket_ids')
@@ -103,7 +103,7 @@ class SMGUserInfo(models.Model):
             if not record.ticket_ids:
                 record.has_ticket = False
             else:
-                record.has_ticket = True
+                record.has_ticket = Truereturn_action_to_open
 
     @api.multi
     def create_ticket_tags(self, vals):
@@ -233,7 +233,7 @@ class SMGEmployee(models.Model):
         user = self.env['smg.user.info'].search([('employee_id', '=', self.id)])
         if user.employee_id.id == self.id:
             context = dict(self.env.context)
-            context['form_view_initial_mode'] = 'edit'
+            # context['form_view_initial_mode'] = 'edit'
             form_id = self.env.ref('smg_create_user.smg_create_user_form')
             return {
                 'type': 'ir.actions.act_window',
@@ -244,7 +244,7 @@ class SMGEmployee(models.Model):
                 'view_mode': 'form',
                 'view_id': form_id.id,
                 'context': context,
-                'flags': {'initial_mode': 'edit'},
+                # 'flags': {'initial_mode': 'edit'},
                 'target': 'current',
             }
         else:

@@ -1,7 +1,7 @@
 <odoo>
   <data>
 
-    <record model="ir.ui.view" id="smg_create_user.list">
+    <record model="ir.ui.view" id="smg_create_user_list">
       <field name="name">smg_create_user list</field>
       <field name="model">smg.user.info</field>
       <field name="arch" type="xml">
