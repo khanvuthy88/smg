@@ -89,12 +89,15 @@ class SMGUserInfo(models.Model):
 
         partner_ids = []
         employee = self.env['hr.employee'].search([('id', '=', vals['employee_id'])])
-        partner_ids.append(employee.address_home_id.id)
+        if employee.address_home_id:
+            partner_ids.append(employee.address_home_id.id)
         if 'manager' in vals:
             manager = self.env['hr.employee'].search([('id', '=', vals['manager'])])
-            partner_ids.append(manager.address_home_id.id)
+            if manager.address_home_id:
+                partner_ids.append(manager.address_home_id.id)
         user = super(SMGUserInfo, self).create(vals)
-        user.message_subscribe(partner_ids=partner_ids)
+        if partner_ids:
+            user.message_subscribe(partner_ids=partner_ids)
         return user
 
     @api.depends('ticket_ids')
@@ -103,7 +106,7 @@ class SMGUserInfo(models.Model):
             if not record.ticket_ids:
                 record.has_ticket = False
             else:
-                record.has_ticket = Truereturn_action_to_open
+                record.has_ticket = True
 
     @api.multi
     def create_ticket_tags(self, vals):
@@ -116,23 +119,23 @@ class SMGUserInfo(models.Model):
 
     @api.multi
     def requested_by_hr(self):
-        self.write({'it_progress_state': 'requested_by_hr'})
+        return self.write({'it_progress_state': 'requested_by_hr'})
 
-        help_desk_team = self.env['helpdesk.team'].search([('id', '=', 1)])
-        ticket_type = self.env['helpdesk.ticket.type'].search([('id', '=', 3)])
-        ticket_tag = self.env['helpdesk.tag'].search([('id', '=', 3)])
-
-        description = "Request create user for {}".format(self.name)
-        ticket_obj = self.env['helpdesk.ticket'].create({
-            'name': self.name,
-            'team_id': help_desk_team.id,
-            'ticket_type_id': ticket_type.id,
-            'create_user_info': self.id,
-            'tag_ids': [(4, ticket_tag.id)],
-            'description': description,
-        })
-
-        return ticket_obj
+        # help_desk_team = self.env['helpdesk.team'].search([('id', '=', 1)])
+        # ticket_type = self.env['helpdesk.ticket.type'].search([('id', '=', 3)])
+        # ticket_tag = self.env['helpdesk.tag'].search([('id', '=', 3)])
+        #
+        # description = "Request create user for {}".format(self.name)
+        # ticket_obj = self.env['helpdesk.ticket'].create({
+        #     'name': self.name,
+        #     'team_id': help_desk_team.id,
+        #     'ticket_type_id': ticket_type.id,
+        #     'create_user_info': self.id,
+        #     'tag_ids': [(4, ticket_tag.id)],
+        #     'description': description,
+        # })
+        #
+        # return ticket_obj
 
     @api.multi
     def precessed_by_it(self):
@@ -161,6 +164,10 @@ class SMGUserInfo(models.Model):
             'tag_ids': [(4, ticket_tag.id)],
             'description': description,
         })
+
+        for record in self.employee_id:
+            record.write({'work_email': self.initial_email})
+
         return ticket_obj
 
     @api.multi
@@ -189,6 +196,9 @@ class SMGUserInfo(models.Model):
             'name': self.odoo_user_for.display_name,
             'login': self.odoo_username_login,
         })
+        # Update record user_id (Related user) in employee form to created user
+        for record in self.employee_id:
+            record.write({'user_id': user_obj.id})
         return user_obj
 
 
