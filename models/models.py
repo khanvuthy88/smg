@@ -51,11 +51,10 @@ class SMGUserInfo(models.Model):
         ('done', 'Completed by HR'),
     ], 'Status', default='draft')
 
-    drive_i_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive I access permission', default='read')
-
-    drive_p_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive P access permission', default='read')
-
-    drive_z_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive Z access permission', default='read')
+    drive_i_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive I', default='read')
+    drive_p_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive P', default='read_and_write')
+    drive_z_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive Z', default='read_and_write')
+    other_drive_permission_access = fields.Selection(selection=drive_selection_permission, string="Other drive", default='read')
 
     drive_note = fields.Text(string="Remark")
 

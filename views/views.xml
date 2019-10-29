@@ -56,9 +56,19 @@
                       <field name="it_progress_state" widget="statusbar"/>
                     </header>
                 <group>
-                  <field name="username" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
-                  <field name="initial_password" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
-                  <field name="initial_email" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
+                  <group string="User info">
+                    <field name="username" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
+                    <field name="initial_password" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
+                    <field name="initial_email" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
+                  </group>
+                  <group string="Standard Drive">
+                    <group>
+                      <field name="drive_p_permission_access" widget="radio"/>
+                    </group>
+                    <group>
+                      <field name="drive_z_permission_access" widget="radio"/>
+                    </group>
+                  </group>
                 </group>
               </page>
               <page string="Odoo">
@@ -96,16 +106,8 @@
                   <group string="Drive I permission">
                     <field name="drive_i_permission_access" widget="radio"/>
                   </group>
-                  <group string="Drive P Permission">
-                    <field name="drive_p_permission_access" widget="radio"/>
-                  </group>
-                </group>
-
-                <group>
-                  <group string="Drive Z Permission">
-                    <field name="drive_z_permission_access" widget="radio"/>
-                  </group>
-                  <group string="Remark">
+                  <group string="Other drive">
+                    <field name="other_drive_permission_access" widget="radio"/>
                     <field name="drive_note"/>
                   </group>
                 </group>
