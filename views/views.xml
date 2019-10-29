@@ -50,9 +50,9 @@
             <notebook>
               <page string="Create User">
                 <header>
-                      <button class="btn-primary" string="REQ. Create User" type="object" name="requested_by_hr" attrs="{'invisible': ['|','|',('it_progress_state', '=', 'requested_by_hr'),('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
-                      <button class="btn-primary" string="Completed" type="object" name="precessed_by_it" attrs="{'invisible':['|',('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
-                      <button class="btn-primary" string="Completed HR" type="object" name="completed_by_hr" attrs="{'invisible':[('it_progress_state','=','done')]}"/>
+                      <button class="btn-primary" groups="smg_create_user.smg_create_user_hr_team" string="REQ. Create User" type="object" name="requested_by_hr" attrs="{'invisible': ['|','|',('it_progress_state', '=', 'requested_by_hr'),('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
+                      <button class="btn-primary" groups="smg_create_user.smg_create_user_it_team" string="Completed" type="object" name="precessed_by_it" attrs="{'invisible':['|',('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
+                      <button class="btn-primary" groups="smg_create_user.smg_create_user_hr_team" string="Completed HR" type="object" name="completed_by_hr" attrs="{'invisible':[('it_progress_state','=','done')]}"/>
                       <field name="it_progress_state" widget="statusbar"/>
                     </header>
                 <group>
