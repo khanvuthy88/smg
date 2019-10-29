@@ -64,19 +64,19 @@
               <page string="Odoo">
                 <group>
                   <header>
-                    <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state"/>
+                    <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state" attrs="{'invisible':['|',('it_progress_state','in',['draft','requested_by_hr']),('odoo_progress_state','in',['draft','process_by_odoo_team'])]}"/>
                     <field name="odoo_progress_state" widget="statusbar"/>
                   </header>
                 </group>
                 <group>
                   <group string="General">
-                    <field name="odoo_user_for"/>
-                    <field name="odoo_requested_by"/>
-                    <field name="odoo_email_address"/>
+                    <field name="odoo_user_for" attrs="{'readonly':[('odoo_progress_state','=','process_by_odoo_team')]}"/>
+                    <field name="odoo_requested_by" attrs="{'readonly':[('odoo_progress_state','=','process_by_odoo_team')]}"/>
+                    <field name="odoo_email_address" attrs="{'readonly':[('odoo_progress_state','=','process_by_odoo_team')]}"/>
                   </group>
                   <group string="Odoo">
-                    <field name="odoo_username_login"/>
-                    <field name="odoo_user_password"/>
+                    <field name="odoo_username_login" attrs="{'readonly':[('odoo_progress_state','=','process_by_odoo_team')]}"/>
+                    <field name="odoo_user_password" attrs="{'readonly':[('odoo_progress_state','=','process_by_odoo_team')]}"/>
                   </group>
                 </group>
               </page>
@@ -94,22 +94,16 @@
                 </group>
                 <group>
                   <group string="Drive I permission">
-                    <field name="drive_i_permission_read"/>
-                    <field name="drive_i_permission_write"/>
-                    <field name="drive_i_permission_read_write"/>
+                    <field name="drive_i_permission_access" widget="radio"/>
                   </group>
                   <group string="Drive P Permission">
-                    <field name="drive_p_permission_read"/>
-                    <field name="drive_p_permission_write"/>
-                    <field name="drive_p_permission_read_write"/>
+                    <field name="drive_p_permission_access" widget="radio"/>
                   </group>
                 </group>
 
                 <group>
                   <group string="Drive Z Permission">
-                    <field name="drive_z_permission_read"/>
-                    <field name="drive_z_permission_write"/>
-                    <field name="drive_z_permission_read_write"/>
+                    <field name="drive_z_permission_access" widget="radio"/>
                   </group>
                   <group string="Remark">
                     <field name="drive_note"/>

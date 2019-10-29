@@ -7,6 +7,15 @@ class SMGUserInfo(models.Model):
     _name = "smg.user.info"
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
+    @api.multi
+    def drive_selection_permission(self):
+        permission = [
+            ('read', 'Read'),
+            ('write', 'Write'),
+            ('read_and_write', 'Read & Write'),
+        ]
+        return permission
+
     name = fields.Char()
     employee_id = fields.Many2one('hr.employee', string="Employee")
     first_name = fields.Char(string="First name")
@@ -41,17 +50,13 @@ class SMGUserInfo(models.Model):
         ('process_by_it', 'Process by IT'),
         ('done', 'Completed by HR'),
     ], 'Status', default='draft')
-    drive_i_permission_read = fields.Boolean(string="Drive I Read")
-    drive_i_permission_write = fields.Boolean(string="Drive I write")
-    drive_i_permission_read_write = fields.Boolean(string="Drive I Read & Write")
 
-    drive_p_permission_read = fields.Boolean(string="Drive P Read")
-    drive_p_permission_write = fields.Boolean(string="Drive P write")
-    drive_p_permission_read_write = fields.Boolean(string="Drive P Read & Write")
+    drive_i_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive I access permission', default='read')
 
-    drive_z_permission_read = fields.Boolean(string="Drive Z Read")
-    drive_z_permission_write = fields.Boolean(string="Drive Z write")
-    drive_z_permission_read_write = fields.Boolean(string="Drive Z Read & Write")
+    drive_p_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive P access permission', default='read')
+
+    drive_z_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive Z access permission', default='read')
+
     drive_note = fields.Text(string="Remark")
 
     # Odoo team
@@ -119,23 +124,24 @@ class SMGUserInfo(models.Model):
 
     @api.multi
     def requested_by_hr(self):
-        return self.write({'it_progress_state': 'requested_by_hr'})
+        # return self.write({'it_progress_state': 'requested_by_hr'})
+        self.write({'it_progress_state': 'requested_by_hr'})
 
-        # help_desk_team = self.env['helpdesk.team'].search([('id', '=', 1)])
-        # ticket_type = self.env['helpdesk.ticket.type'].search([('id', '=', 3)])
-        # ticket_tag = self.env['helpdesk.tag'].search([('id', '=', 3)])
-        #
-        # description = "Request create user for {}".format(self.name)
-        # ticket_obj = self.env['helpdesk.ticket'].create({
-        #     'name': self.name,
-        #     'team_id': help_desk_team.id,
-        #     'ticket_type_id': ticket_type.id,
-        #     'create_user_info': self.id,
-        #     'tag_ids': [(4, ticket_tag.id)],
-        #     'description': description,
-        # })
-        #
-        # return ticket_obj
+        help_desk_team = self.env['helpdesk.team'].search([('id', '=', 2)])
+        ticket_type = self.env['helpdesk.ticket.type'].search([('id', '=', 15)])
+        ticket_tag = self.env['helpdesk.tag'].search([('id', '=', 39)])
+
+        description = "Request create user for {}".format(self.name)
+        ticket_obj = self.env['helpdesk.ticket'].create({
+            'name': self.name,
+            'team_id': help_desk_team.id,
+            'ticket_type_id': ticket_type.id,
+            'create_user_info': self.id,
+            'tag_ids': [(4, ticket_tag.id)],
+            'description': description,
+        })
+
+        return ticket_obj
 
     @api.multi
     def precessed_by_it(self):
@@ -151,9 +157,9 @@ class SMGUserInfo(models.Model):
         })
 
         # Prepare to create ticket
-        help_desk_team = self.env['helpdesk.team'].search([('id', '=', 2)])
-        ticket_type = self.env['helpdesk.ticket.type'].search([('id', '=', 4)])
-        ticket_tag = self.env['helpdesk.tag'].search([('id', '=', 3)])
+        help_desk_team = self.env['helpdesk.team'].search([('id', '=', 1)])
+        ticket_type = self.env['helpdesk.ticket.type'].search([('id', '=', 15)])
+        ticket_tag = self.env['helpdesk.tag'].search([('id', '=', 42)])
 
         description = "Request create user for {} in Odoo system.".format(self.name)
         ticket_obj = self.env['helpdesk.ticket'].create({
@@ -178,12 +184,13 @@ class SMGUserInfo(models.Model):
     def view_user_ticket(self):
         context = dict(self.env.context)
         form_id = self.env.ref('helpdesk.helpdesk_tickets_view_tree')
+        # employee_ticket = self.env['helpdesk.ticket'].search([('create_user_info','=', [self.id])])
         print("This is domain id {}".format(self.ticket_ids))
         return {
             "type": "ir.actions.act_window",
             "res_model": "helpdesk.ticket",
             "views": [[False, "tree"], [False, "form"]],
-            "domain": [["id", "in", [self.ticket_ids.id]]],
+            "domain": [["create_user_info", "in", [self.id]]],
         }
 
     @api.multi
@@ -196,6 +203,7 @@ class SMGUserInfo(models.Model):
             'name': self.odoo_user_for.display_name,
             'login': self.odoo_username_login,
         })
+
         # Update record user_id (Related user) in employee form to created user
         for record in self.employee_id:
             record.write({'user_id': user_obj.id})
@@ -239,7 +247,7 @@ class SMGEmployee(models.Model):
 
     @api.multi
     def return_action_to_open(self):
-        self.ensure_one()
+        # self.ensure_one()
         user = self.env['smg.user.info'].search([('employee_id', '=', self.id)])
         if user.employee_id.id == self.id:
             context = dict(self.env.context)
