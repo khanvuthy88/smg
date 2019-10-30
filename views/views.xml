@@ -21,6 +21,8 @@
       <field name="arch" type="xml">
         <form string="User list">
           <header>
+            <field name="state" widget="statusbar" clickable="1"/>
+            <button name="requested_by_hr" class="btn-primary" groups="smg_create_user.smg_create_user_hr_team" type="object" string="Confirm Req. User" attrs="{'invisible': ['|','|',('it_progress_state', '=', 'requested_by_hr'),('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
             <button  name="view_user_ticket" type="object" string="View Ticket" class="oe_highlight" attrs="{'invisible':[('has_ticket', '=', False)]}"/>
           </header>
           <sheet>
@@ -48,7 +50,7 @@
               </group>
             </group>
             <notebook>
-              <page string="Create User">
+              <page string="User &amp; Drive">
                 <header>
                       <button class="btn-primary" groups="smg_create_user.smg_create_user_hr_team" string="REQ. Create User" type="object" name="requested_by_hr" attrs="{'invisible': ['|','|',('it_progress_state', '=', 'requested_by_hr'),('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
                       <button class="btn-primary" groups="smg_create_user.smg_create_user_it_team" string="Completed" type="object" name="precessed_by_it" attrs="{'invisible':['|',('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
@@ -62,38 +64,9 @@
                     <field name="initial_email" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
                   </group>
                   <group string="Standard Drive">
-                    <group>
-                      <field name="drive_p_permission_access" widget="radio"/>
-                    </group>
-                    <group>
-                      <field name="drive_z_permission_access" widget="radio"/>
-                    </group>
+                      <field name="drive_p_permission_access" widget="selection"/>
+                      <field name="drive_z_permission_access" widget="selection"/>
                   </group>
-                </group>
-              </page>
-              <page string="Odoo">
-                <group>
-                  <header>
-                    <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state" attrs="{'invisible':['|',('it_progress_state','in',['draft','requested_by_hr']),('odoo_progress_state','in',['draft','process_by_odoo_team'])]}"/>
-                    <field name="odoo_progress_state" widget="statusbar"/>
-                  </header>
-                </group>
-                <group>
-                  <group string="General">
-                    <field name="odoo_user_for" attrs="{'readonly':[('odoo_progress_state','=','process_by_odoo_team')]}"/>
-                    <field name="odoo_requested_by" attrs="{'readonly':[('odoo_progress_state','=','process_by_odoo_team')]}"/>
-                    <field name="odoo_email_address" attrs="{'readonly':[('odoo_progress_state','=','process_by_odoo_team')]}"/>
-                  </group>
-                  <group string="Odoo">
-                    <field name="odoo_username_login" attrs="{'readonly':[('odoo_progress_state','=','process_by_odoo_team')]}"/>
-                    <field name="odoo_user_password" attrs="{'readonly':[('odoo_progress_state','=','process_by_odoo_team')]}"/>
-                  </group>
-                </group>
-              </page>
-              <page string="Att Card">
-                <group>
-                  <field name="description"/>
-                  <field name="attendance_card_create"/>
                 </group>
               </page>
               <page string="Drive Access">
@@ -110,6 +83,41 @@
                     <field name="other_drive_permission_access" widget="radio"/>
                     <field name="drive_note"/>
                   </group>
+                </group>
+              </page>
+              <page string="Odoo">
+                <group>
+                  <header>
+                    <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state" attrs="{'invisible':['|',('it_progress_state','in',['draft','requested_by_hr']),('odoo_standard_progress_state','in',['draft','process_by_odoo_team'])]}"/>
+                    <field name="odoo_standard_progress_state" widget="statusbar"/>
+                  </header>
+                </group>
+                <group>
+                  <group string="Odoo">
+                    <field name="odoo_username_login" attrs="{'readonly':[('odoo_standard_progress_state','=','process_by_odoo_team')]}"/>
+                    <field name="odoo_user_password" attrs="{'readonly':[('odoo_standard_progress_state','=','process_by_odoo_team')]}"/>
+                  </group>
+                  <group string="Standard Access">
+                    <field name="user_odoo_standard_access" nolabel="1"/>
+                  </group>
+                </group>
+              </page>
+              <page string="Odoo Access">
+                <group>
+                  <header>
+                    <button class="btn-primary" name="odoo_grant_access_by_head" groups="smg_create_user.smg_create_user_hr_team" string="Request Grant access" type="object" attrs="{'invisible':[('odoo_standard_progress_state','in',['draft','process_by_odoo_team','fwd_by_it','requested_by_head_department'])]}"/>
+                    <button class="btn-primary" name="odoo_grant_access_complete_by_odoo_team" string="Complete Request" type="object" groups="smg_create_user.smg_create_user_odoo_team" attrs="{'invisible':[('odoo_standard_progress_state','in',['draft'])]}"/>
+                    <field name="odoo_grant_progress_state" widget="statusbar"/>
+                  </header>
+                </group>
+                <group>
+                  <field name="user_odoo_grant_access" nolabel="1"/>
+                </group>
+              </page>
+              <page string="Att Card">
+                <group>
+                  <field name="description"/>
+                  <field name="attendance_card_create"/>
                 </group>
               </page>
               <page string="Account">
@@ -141,22 +149,39 @@
       <field name="res_mode">tree,form</field>
     </record>
 
+    <!--   This code add Button create user request to employee from view -->
     <record model="ir.ui.view" id="smg_create_user_employee">
       <field name="name">smg_create_user_employee</field>
       <field name="model">hr.employee</field>
       <field name="inherit_id" ref="hr.view_employee_form"/>
       <field name="arch" type="xml">
-        <xpath expr="//div[@name='button_box']" position="inside">
-          <button name="return_action_to_open"
+        <xpath expr="//form//sheet" position="before">
+          <header>
+            <button name="return_action_to_open"
                   type="object"
-                  class="oe_stat_button"
+                  class="btn-primary "
                   icon="fa-book"
-                  string="IT form"
+                  string="REQ.User"
                   context="{'xml_id':'smg_create_user_action_window'}"
                   help="show the contract for this vehicle"/>
+          </header>
         </xpath>
       </field>
     </record>
+
+    <!--    Add standard access field and grant access field to table res.groups form view-->
+    <record model="ir.ui.view" id="smg_res_group_form_view">
+      <field name="name">smg_res_group_form_view</field>
+      <field name="model">res.groups</field>
+      <field name="inherit_id" ref="base.view_groups_form"/>
+      <field name="arch" type="xml">
+        <xpath expr="//field[@name='share']" position="after">
+          <field name="user_standard_acess"/>
+          <field name="user_grant_access"/>
+        </xpath>
+      </field>
+    </record>
+
 
     <record model="ir.ui.view" id="smg_create_user_ticket">
       <field name="name">smg_create_user_ticket</field>

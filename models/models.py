@@ -16,11 +16,41 @@ class SMGUserInfo(models.Model):
         ]
         return permission
 
+    @api.multi
+    def department_drive_selectin_permission(self):
+        permission_list=[
+            ('read', 'Read'),
+            ('write', 'Write'),
+            ('read_and_write', 'Read & Write'),
+            ('na','N/A'),
+        ]
+        return permission_list
+
+    @api.multi
+    def odoo_progress_state_list(self):
+        odoo_progress_state_list = [
+            ('draft', 'Draft'),
+            ('fwd_by_it', 'FWD by IT'),
+            ('requested_by_head_department', 'Requested by Head'),
+            ('process_by_odoo_team', 'Processed by Odoo')
+        ]
+        return odoo_progress_state_list
+
+    @api.multi
+    def odoo_grand_state_list(self):
+        progress_state_list = [
+            ('draft', 'Draft'),
+            ('requested_by_head_department', 'Requested by Head'),
+            ('process_by_odoo_team', 'Processed by Odoo')
+        ]
+        return progress_state_list
+
     name = fields.Char()
+    state = fields.Selection([('new_user','New User'),('user_movement', 'User Movement'),('user_termination','User Termination')],'State', default='new_user')
     employee_id = fields.Many2one('hr.employee', string="Employee")
     first_name = fields.Char(string="First name")
     last_name = fields.Char(string='Last name')
-    employee_id_number = fields.Char(string="Employee Number")
+    employee_id_number = fields.Char(string="Employee ID")
     telegram_id = fields.Char(string="Telegram ID")
     start_date = fields.Date(string="Start Date", default=fields.Date.today)
     company_name = fields.Many2one('res.partner', string="Company name")
@@ -51,21 +81,17 @@ class SMGUserInfo(models.Model):
         ('done', 'Completed by HR'),
     ], 'Status', default='draft')
 
-    drive_i_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive I', default='read')
+    drive_i_permission_access = fields.Selection(selection= department_drive_selectin_permission, string='Drive I', default='na')
+    other_drive_permission_access = fields.Selection(selection=department_drive_selectin_permission, string="Other drive",
+                                                     default='na')
     drive_p_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive P', default='read_and_write')
     drive_z_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive Z', default='read_and_write')
-    other_drive_permission_access = fields.Selection(selection=drive_selection_permission, string="Other drive", default='read')
-
     drive_note = fields.Text(string="Remark")
 
     # Odoo team
 
-    odoo_progress_state = fields.Selection([
-        ('draft', 'Draft'),
-        ('requested_by_hr', 'Requested by HR'),
-        ('fwd_by_it', 'FWD by IT'),
-        ('process_by_odoo_team', 'Processed by Odoo'),
-    ], 'Status', default='draft')
+    odoo_standard_progress_state = fields.Selection(selection=odoo_progress_state_list, string='Status', default='draft')
+    odoo_grant_progress_state = fields.Selection(selection=odoo_grand_state_list, string='Status', default='draft')
     odoo_user_for = fields.Many2one('hr.employee', string="Employee Name")
     odoo_requested_by = fields.Char(string="Req By")
     odoo_email_address = fields.Char(string="Email Address")
@@ -85,6 +111,23 @@ class SMGUserInfo(models.Model):
     account_remark = fields.Text(string="Remark")
     ticket_ids = fields.One2many('helpdesk.ticket', 'create_user_info', 'Tickets')
     has_ticket = fields.Boolean(string="Has ticket", compute="_get_ticket_by_self")
+
+    # Add field many2many to table res.group
+    # This field using in odoo tab for allow permission access to app
+    user_odoo_standard_access = fields.Many2many('res.groups', domain=[('user_standard_acess', '=', True)])
+    user_odoo_grant_access = fields.Many2many('res.groups', domain=[('user_grant_access', '=', True)])
+
+    @api.multi
+    def odoo_grant_access_by_head(self):
+        return self.write({
+            'odoo_grant_progress_state': 'requested_by_head_department',
+        })
+
+    @api.multi
+    def odoo_grant_access_complete_by_odoo_team(self):
+        return self.write({
+            'odoo_grant_progress_state': 'process_by_odoo_team',
+        })
 
     @api.model
     def create(self, vals):
@@ -149,7 +192,7 @@ class SMGUserInfo(models.Model):
             'it_progress_state': 'process_by_it',
             'odoo_user_for': self.employee_id.id,
             'odoo_requested_by': 'IT',
-            'odoo_progress_state': 'fwd_by_it',
+            'odoo_standard_progress_state': 'fwd_by_it',
             'odoo_email_address': self.initial_email,
             'odoo_username_login': self.initial_email,
             'odoo_user_password': self.initial_password,
@@ -275,6 +318,7 @@ class SMGEmployee(models.Model):
                 email = '{}@{}'.format(username, 'somagroup.com.kh')
 
                 context = dict(
+                    default_employee_id_number = self.smg_empid,
                     default_employee_id=self.id,
                     default_name=self.name,
                     default_department=self.department_id.id,
@@ -302,3 +346,11 @@ class SMGEmployee(models.Model):
                 }
 
         return False
+
+
+
+class SMGResgroup(models.Model):
+    _inherit = ['res.groups']
+
+    user_standard_acess = fields.Boolean(string="User Standard Access", default=False)
+    user_grant_access = fields.Boolean(string="User Grant Access", default=False)
