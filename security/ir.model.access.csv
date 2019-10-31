@@ -1,5 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_smg_create_user_smg_create_user,smg_create_user.smg_create_user,model_smg_create_user_smg_create_user,,1,0,0,0
 smg_create_user_group_hr, Model admin access,model_smg_user_info,smg_create_user.smg_create_user_hr_team,1,1,1,0
 smg_create_user_group_it, Model admin access,model_smg_user_info,smg_create_user.smg_create_user_it_team,1,1,1,0
 smg_create_user_group_odoo, Model admin access,model_smg_user_info,smg_create_user.smg_create_user_odoo_team,1,1,1,0
