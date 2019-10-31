@@ -45,9 +45,9 @@ class SMGUserInfo(models.Model):
         ]
         return progress_state_list
 
-    name = fields.Char()
-    state = fields.Selection([('new_user','New User'),('user_movement', 'User Movement'),('user_termination','User Termination')],'State', default='new_user')
-    employee_id = fields.Many2one('hr.employee', string="Employee")
+    name = fields.Char(track_visibility='always')
+    state = fields.Selection([('new_user', 'New User'), ('user_movement', 'User Movement'), ('user_termination', 'User Termination')], 'State', default='new_user', track_visibility='always')
+    employee_id = fields.Many2one('hr.employee', string="Employee", )
     first_name = fields.Char(string="First name")
     last_name = fields.Char(string='Last name')
     employee_id_number = fields.Char(string="Employee ID")
@@ -59,15 +59,15 @@ class SMGUserInfo(models.Model):
     manager = fields.Many2one('hr.employee', string="Manager")
 
     # Create user notepad
-    username = fields.Char(string="User name")
-    initial_password = fields.Char(string="Initial Password")
-    initial_email = fields.Char(string="Initial Email")
+    username = fields.Char(string="User name", track_visibility='always')
+    initial_password = fields.Char(string="Initial Password", track_visibility='always')
+    initial_email = fields.Char(string="Initial Email", track_visibility='always')
     it_progress_state = fields.Selection([
         ('draft', 'Draft'),
         ('requested_by_hr', 'Requested by HR'),
         ('process_by_it', 'Process by IT'),
         ('done', 'Completed by HR'),
-    ], 'Status', default='draft')
+    ], 'Status', default='draft', track_visibility='always')
 
     # Noted by HR
     description = fields.Text()
@@ -81,11 +81,11 @@ class SMGUserInfo(models.Model):
         ('done', 'Completed by HR'),
     ], 'Status', default='draft')
 
-    drive_i_permission_access = fields.Selection(selection= department_drive_selectin_permission, string='Drive I', default='na')
+    drive_i_permission_access = fields.Selection(selection= department_drive_selectin_permission, string='Drive I', default='na', track_visibility='always')
     other_drive_permission_access = fields.Selection(selection=department_drive_selectin_permission, string="Other drive",
-                                                     default='na')
-    drive_p_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive P', default='read_and_write')
-    drive_z_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive Z', default='read_and_write')
+                                                     default='na', track_visibility='always')
+    drive_p_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive P', default='read_and_write', track_visibility='always')
+    drive_z_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive Z', default='read_and_write', track_visibility='always')
     drive_note = fields.Text(string="Remark")
 
     # Odoo team
@@ -116,6 +116,15 @@ class SMGUserInfo(models.Model):
     # This field using in odoo tab for allow permission access to app
     user_odoo_standard_access = fields.Many2many('res.groups', domain=[('user_standard_acess', '=', True)])
     user_odoo_grant_access = fields.Many2many('res.groups', domain=[('user_grant_access', '=', True)])
+
+    @api.onchange('employee_id')
+    def _onchange_employee_id(self):
+        if self.employee_id:
+            self.employee_id_number = self.employee_id.smg_empid
+            self.manager = self.employee_id.parent_id.id
+            self.position = self.employee_id.job_id.id
+            self.company_name = self.employee_id.address_id.id
+
 
     @api.multi
     def odoo_grant_access_by_head(self):

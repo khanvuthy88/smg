@@ -161,7 +161,7 @@
                   type="object"
                   class="btn-primary "
                   icon="fa-book"
-                  string="REQ.User"
+                  string="REQ.Standard User"
                   context="{'xml_id':'smg_create_user_action_window'}"
                   help="show the contract for this vehicle"/>
           </header>
