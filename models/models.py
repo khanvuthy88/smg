@@ -204,7 +204,8 @@ class SMGUserInfo(models.Model):
             'odoo_standard_progress_state': 'fwd_by_it',
             'odoo_email_address': self.initial_email,
             'odoo_username_login': self.initial_email,
-            'odoo_user_password': self.initial_password,
+            'odoo_user_password': 'Smg$123',
+            # 'odoo_user_password': self.initial_password,
         })
 
         # Prepare to create ticket
@@ -247,7 +248,7 @@ class SMGUserInfo(models.Model):
     @api.multi
     def odoo_complete_state(self):
         # Update odoo state
-        self.write({'odoo_progress_state': 'process_by_odoo_team'})
+        self.write({'odoo_standard_progress_state': 'process_by_odoo_team'})
 
         # Create user in odoo system
         user_obj = self.env['res.users'].create({
@@ -322,14 +323,19 @@ class SMGEmployee(models.Model):
                 res = self.env['ir.actions.act_window'].for_xml_id('smg_create_user', xml_id)
                 lower_string = self.lower_string(self.name)
                 split_string = self.split_string(lower_string)
-                username = '-'.join(split_string)
+                username = '{}\{}'.format('SOMAGROUP', '-'.join(split_string))
+                print("This is name {}".format(split_string))
+                first_name = split_string[0]
+                last_name = split_string[1]
                 password = 'smg@123'
-                email = '{}@{}'.format(username, 'somagroup.com.kh')
+                email = '{}@{}'.format('-'.join(split_string),'somagroup.com.kh')
 
                 context = dict(
                     default_employee_id_number = self.smg_empid,
                     default_employee_id=self.id,
                     default_name=self.name,
+                    default_first_name = first_name.isupper(),
+                    default_last_name = last_name.capitalize(),
                     default_department=self.department_id.id,
                     default_manager=self.parent_id.id,
                     default_position=self.job_id.id,

@@ -35,8 +35,8 @@
             <group>
               <group string="Personal Info">
                 <field name="employee_id"/>
-                <field name="first_name"/>
                 <field name="last_name"/>
+                <field name="first_name"/>
                 <field name="employee_id_number"/>
                 <field name="telegram_id"/>
                 <field name="start_date"/>
@@ -98,7 +98,7 @@
                     <field name="odoo_user_password" attrs="{'readonly':[('odoo_standard_progress_state','=','process_by_odoo_team')]}"/>
                   </group>
                   <group string="Standard Access">
-                    <field name="user_odoo_standard_access" nolabel="1"/>
+                    <field name="user_odoo_standard_access" nolabel="1" widget="many2many_checkboxes"/>
                   </group>
                 </group>
               </page>
