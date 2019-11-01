@@ -120,10 +120,14 @@ class SMGUserInfo(models.Model):
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
         if self.employee_id:
+            full_name = self.employee_id.display_name.split(" ", 1)
+            self.last_name = full_name[0]
+            self.first_name = full_name[1]
             self.employee_id_number = self.employee_id.smg_empid
+            self.department = self.employee_id.department_id.id
             self.manager = self.employee_id.parent_id.id
             self.position = self.employee_id.job_id.id
-            self.company_name = self.employee_id.address_id.id
+            self.company_name = self.employee_id.company_id.id
 
 
     @api.multi
