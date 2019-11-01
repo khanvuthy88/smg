@@ -189,6 +189,8 @@ class SMGUserInfo(models.Model):
         description = "Request create user for {}".format(self.name)
         ticket_obj = self.env['helpdesk.ticket'].create({
             'name': self.name,
+            'partner_id': self.employee_id.address_home_id.id,
+            'partner_name': self.display_name,
             'team_id': help_desk_team.id,
             'ticket_type_id': ticket_type.id,
             'create_user_info': self.id,
@@ -220,6 +222,8 @@ class SMGUserInfo(models.Model):
         description = "Request create user for {} in Odoo system.".format(self.name)
         ticket_obj = self.env['helpdesk.ticket'].create({
             'name': self.name,
+            'partner_id': self.employee_id.address_home_id.id,
+            'partner_name': self.display_name,
             'team_id': help_desk_team.id,
             'ticket_type_id': ticket_type.id,
             'create_user_info': self.id,
@@ -340,7 +344,7 @@ class SMGEmployee(models.Model):
                     default_department=self.department_id.id,
                     default_manager=self.parent_id.id,
                     default_position=self.job_id.id,
-                    default_company_name=self.address_id.id,
+                    default_company_name=self.company_id.id,
                     default_username=username,
                     default_initial_password=password,
                     default_initial_email=email,
