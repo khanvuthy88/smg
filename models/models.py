@@ -227,21 +227,18 @@ class SMGUserInfo(models.Model):
             'description': description,
         })
 
-        for record in self.employee_id:
-            record.write({'work_email': self.initial_email})
-
         return ticket_obj
 
     @api.multi
     def completed_by_hr(self):
+        for record in self.employee_id:
+            record.write({'work_email': self.initial_email})
         return self.write({'it_progress_state': 'done'})
 
     @api.multi
     def view_user_ticket(self):
         context = dict(self.env.context)
         form_id = self.env.ref('helpdesk.helpdesk_tickets_view_tree')
-        # employee_ticket = self.env['helpdesk.ticket'].search([('create_user_info','=', [self.id])])
-        print("This is domain id {}".format(self.ticket_ids))
         return {
             "type": "ir.actions.act_window",
             "res_model": "helpdesk.ticket",
@@ -261,8 +258,8 @@ class SMGUserInfo(models.Model):
         })
 
         # Update record user_id (Related user) in employee form to created user
-        for record in self.employee_id:
-            record.write({'user_id': user_obj.id})
+        # for record in self.employee_id:
+        #     record.write({'user_id': user_obj.id})
         return user_obj
 
 
@@ -327,12 +324,12 @@ class SMGEmployee(models.Model):
                 res = self.env['ir.actions.act_window'].for_xml_id('smg_create_user', xml_id)
                 lower_string = self.lower_string(self.name)
                 split_string = self.split_string(lower_string)
-                username = '{}\{}'.format('SOMAGROUP', '-'.join(split_string))
-                print("This is name {}".format(split_string))
-                first_name = split_string[0]
-                last_name = split_string[1]
+                full_name = self.display_name.split(" ", 1)
+                username = '{}\{}'.format('SOMAGROUP', '.'.join(split_string))
+                first_name = full_name[0]
+                last_name = full_name[1]
                 password = 'smg@123'
-                email = '{}@{}'.format('-'.join(split_string),'somagroup.com.kh')
+                email = '{}@{}'.format('.'.join(split_string),'somagroup.com.kh')
 
                 context = dict(
                     default_employee_id_number = self.smg_empid,
