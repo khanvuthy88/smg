@@ -52,20 +52,20 @@ class SMGUserInfo(models.Model):
     last_name = fields.Char(string='Last name')
     employee_id_number = fields.Char(string="Employee ID")
     telegram_id = fields.Char(string="Telegram ID")
-    start_date = fields.Date(string="Start Date", default=fields.Date.today)
+    start_date = fields.Date(string="Start Date")
     company_name = fields.Many2one('res.partner', string="Company name")
     department = fields.Many2one('hr.department', string="Department")
     position = fields.Many2one('hr.job', string="Position")
     manager = fields.Many2one('hr.employee', string="Manager")
 
     # Create user notepad
-    username = fields.Char(string="User name", track_visibility='always')
-    initial_password = fields.Char(string="Initial Password", track_visibility='always')
-    initial_email = fields.Char(string="Initial Email", track_visibility='always')
+    username = fields.Char(string="User name")
+    initial_password = fields.Char(string="Initial Password")
+    initial_email = fields.Char(string="Initial Email")
     it_progress_state = fields.Selection([
         ('draft', 'Draft'),
         ('requested_by_hr', 'Requested by HR'),
-        ('process_by_it', 'Process by IT'),
+        ('process_by_it', 'Processed by IT'),
         ('done', 'Completed by HR'),
     ], 'Status', default='draft', track_visibility='always')
 
@@ -77,7 +77,7 @@ class SMGUserInfo(models.Model):
     drive_progress_state = fields.Selection([
         ('draft', 'Draft'),
         ('requested_by_hr', 'Requested by HR'),
-        ('process_by_it', 'Process by IT'),
+        ('process_by_it', 'Processed by IT'),
         ('done', 'Completed by HR'),
     ], 'Status', default='draft')
 
@@ -333,7 +333,7 @@ class SMGEmployee(models.Model):
                 first_name = full_name[0]
                 last_name = full_name[1]
                 password = 'smg@123'
-                email = '{}@{}'.format('.'.join(split_string),'somagroup.com.kh')
+                email = '@{}'.format('somagroup.com.kh')
 
                 context = dict(
                     default_employee_id_number = self.smg_empid,
@@ -346,7 +346,7 @@ class SMGEmployee(models.Model):
                     default_position=self.job_id.id,
                     default_company_name=self.company_id.id,
                     default_username=username,
-                    default_initial_password=password,
+                    # default_initial_password=password,
                     default_initial_email=email,
                     group_by=False
                 )
