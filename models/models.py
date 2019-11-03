@@ -112,6 +112,19 @@ class SMGUserInfo(models.Model):
     ticket_ids = fields.One2many('helpdesk.ticket', 'create_user_info', 'Tickets')
     has_ticket = fields.Boolean(string="Has ticket", compute="_get_ticket_by_self")
 
+    # Access card field
+    card_aceess_floor_door = fields.Many2many('smg.access_floor')
+    card_access_door = fields.Selection([
+        ('ground_floor','Ground Floor'),
+        ('1st_floor','1st Floor'),
+        ('2nd_floor','2nd Floor'),
+        ('3rd_floor','3rd Floor'),
+        ('4th_floor', '4th Floor'),
+        ('5th_floor', '5th Floor'),
+        ('6th_floor', '6th Floor'),
+        ('7th_floor', '6th Floor')
+    ],"Card access door")
+
     # Add field many2many to table res.group
     # This field using in odoo tab for allow permission access to app
     user_odoo_standard_access = fields.Many2many('res.groups', domain=[('user_standard_acess', '=', True)])
@@ -266,6 +279,11 @@ class SMGUserInfo(models.Model):
         #     record.write({'user_id': user_obj.id})
         return user_obj
 
+
+class SMGFloor(models.Model):
+    _name="smg.access_floor"
+
+    name = fields.Char()
 
 class SMGTicket(models.Model):
     _inherit = ['helpdesk.ticket']

@@ -115,14 +115,18 @@
                 </group>
               </page>
               <page string="Att Card">
-                <group>
-                  <field name="description"/>
-                  <field name="attendance_card_create"/>
+                <group string="Access door">
+                    <group>
+                      <field name="card_aceess_floor_door" widget="many2many_checkboxes"/>
+                    </group>
+                    <group>
+                      <field name="description"/>
+                      <field name="attendance_card_create"/>
+                    </group>
                 </group>
               </page>
               <page string="Account">
                 <header>
-
                   <field name="account_progress_state" widget="statusbar"/>
                 </header>
                 <group>
@@ -200,6 +204,39 @@
         </xpath>
       </field>
     </record>
+
+    <!--    SMG Floor view-->
+
+    <record model="ir.ui.view" id="smg_floor_list">
+      <field name="name">SMG Floor list</field>
+      <field name="model">smg.access_floor</field>
+      <field name="arch" type="xml">
+        <tree string="Floor">
+          <field name="name"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="smg_floor_list">
+      <field name="name">SMG Floor list</field>
+      <field name="model">smg.access_floor</field>
+      <field name="arch" type="xml">
+        <form string="Floor">
+          <field name="name"/>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="smg_floor_action">
+      <field name="name">Floor</field>
+      <field name="res_model">smg.access_floor</field>
+      <field name="res_mode">tree,form</field>
+    </record>
+    <menuitem
+            id="smg_floor_menu_view_form"
+            action="smg_floor_action"
+            parent="hr.menu_human_resources_configuration"
+            sequence="1"/>
 
 
   </data>
