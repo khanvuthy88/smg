@@ -26,6 +26,7 @@
     'data': [
         'security/user_group.xml',
         'security/ir.model.access.csv',
+        'views/drive_and_odoo.xml',
         'views/views.xml',
         'views/helpdesk.xml',
         'views/templates.xml',

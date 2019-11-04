@@ -1,0 +1,105 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="smg_drive_and_odoo_list">
+            <field name="name">SMG Drive and Odoo</field>
+            <field name="model">smg.drive.odoo</field>
+            <field name="arch" type="xml">
+                <tree string="SMG Drive and Odoo">
+                    <field name="name"/>
+                    <field name="drive_i_permission_access"/>
+                    <field name="other_drive_permission_access"/>
+                    <field name="user_odoo_grant_access"/>
+                </tree>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="smg_drive_and_odoo_form">
+            <field name="name">SMG Drive and Odoo</field>
+            <field name="model">smg.drive.odoo</field>
+            <field name="arch" type="xml">
+                <form string="SMG Drive and Odoo">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <notebook>
+                            <page string="Drive Access">
+                                <group>
+                                    <header>
+                                        <button name="action_head_make_request_drive"
+                                                class="btn-primary" groups="smg_create_user.smg_create_user_hr_team"
+                                                string="Make Request"
+                                                attrs="{'invisible':[('drive_state','in',['requested_by_head','it_process_completed','head_make_done'])]}"
+                                                type="object" />
+                                        <button name="action_make_it_complete_by_it"
+                                                class="btn-primary"
+                                                groups="smg_create_user.smg_create_user_it_team"
+                                                string="Make it complete"
+                                                attrs="{'invisible':[('drive_state','in',['it_process_completed','head_make_done'])]}"
+                                                type="object"/>
+                                        <button name="action_make_it_done_by_head_drive"
+                                                class="btn-primary"
+                                                groups="smg_create_user.smg_create_user_hr_team"
+                                                string="Done"
+                                                attrs="{'invisible':[('drive_state','in',['draft','requested_by_head','head_make_done'])]}"
+                                                type="object"/>
+                                        <field name="drive_state" widget="statusbar"/>
+                                    </header>
+                                </group>
+                                <group>
+                                    <group>
+                                        <field name="drive_i_permission_access"/>
+                                    </group>
+                                    <group>
+                                        <field name="other_drive_permission_access"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="drive_note"/>
+                                </group>
+                            </page>
+                            <page string="Odoo Access">
+
+                                <group>
+                                    <header>
+                                        <button name="action_head_make_request_odoo"
+                                                class="btn-primary" groups="smg_create_user.smg_create_user_hr_team"
+                                                string="Make Request"
+                                                attrs="{'invisible':[('odoo_state','in',['requested_by_head','it_process_completed','head_make_done'])]}"
+                                                type="object" />
+                                        <button name="action_make_it_complete_by_odoo"
+                                                class="btn-primary"
+                                                groups="smg_create_user.smg_create_user_odoo_team"
+                                                string="Make it complete"
+                                                attrs="{'invisible':[('odoo_state','in',['it_process_completed','head_make_done'])]}"
+                                                type="object"/>
+                                        <button name="action_make_it_done_by_head_odoo"
+                                                class="btn-primary"
+                                                groups="smg_create_user.smg_create_user_hr_team"
+                                                string="Done"
+                                                attrs="{'invisible':[('odoo_state','in',['draft','requested_by_head','head_make_done'])]}"
+                                                type="object"/>
+                                        <field name="odoo_state" widget="statusbar"/>
+                                    </header>
+                                </group>
+                                <group>
+                                    <field name="user_odoo_grant_access" nolabel="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_smg_drive_and_odoo" model="ir.actions.act_window">
+            <field name="name">Drive and Odoo Access</field>
+            <field name="res_model">smg.drive.odoo</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="smg_drive_and_odoo_form"/>
+            <field name="context">{'default_invoice_ids': [(4, active_id, None)]}</field>
+            <field name="target">current</field>
+        </record>
+    </data>
+</odoo>

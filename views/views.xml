@@ -50,13 +50,23 @@
               </group>
             </group>
             <notebook>
-              <page string="User &amp; Drive" groups="smg_create_user.smg_create_user_hr_team, smg_create_user.smg_create_user_it_team">
+              <page string="User,Drive &amp; Access Card" groups="smg_create_user.smg_create_user_hr_team, smg_create_user.smg_create_user_it_team">
                 <header>
-                      <button class="btn-primary" groups="smg_create_user.smg_create_user_hr_team" string="REQ. Create User" type="object" name="requested_by_hr" attrs="{'invisible': ['|','|',('it_progress_state', '=', 'requested_by_hr'),('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
-                      <button class="btn-primary" groups="smg_create_user.smg_create_user_it_team" string="Completed" type="object" name="precessed_by_it" attrs="{'invisible':['|',('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
-                      <button class="btn-primary" groups="smg_create_user.smg_create_user_hr_team" string="Completed HR" type="object" name="completed_by_hr" attrs="{'invisible':[('it_progress_state','=','done')]}"/>
-                      <field name="it_progress_state" widget="statusbar"/>
-                    </header>
+                  <button class="btn-primary" groups="smg_create_user.smg_create_user_hr_team" string="REQ. Create User" type="object" name="requested_by_hr" attrs="{'invisible': ['|','|',('it_progress_state', '=', 'requested_by_hr'),('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
+                  <button class="btn-primary" groups="smg_create_user.smg_create_user_it_team" string="Completed" type="object" name="precessed_by_it" attrs="{'invisible':['|',('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
+                  <button class="btn-primary" groups="smg_create_user.smg_create_user_hr_team" string="Completed by HR" type="object" name="completed_by_hr" attrs="{'invisible':[('it_progress_state','=','done')]}"/>
+                  <field name="it_progress_state" widget="statusbar"/>
+                </header>
+                <group>
+                    <separator string="Access Door" colspan="2"/>
+                    <group>
+                      <field name="card_aceess_floor_door" widget="many2many_checkboxes"/>
+                    </group>
+                    <group>
+                      <field name="description"/>
+                      <field name="attendance_card_create"/>
+                    </group>
+                </group>
                 <group>
                   <group string="User info">
                     <field name="username" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
@@ -68,27 +78,14 @@
                       <field name="drive_z_permission_access" widget="selection"/>
                   </group>
                 </group>
-              </page>
-              <page string="Drive Access">
-                <group>
-                  <header>
-                    <field name="drive_progress_state" widget="statusbar"/>
-                  </header>
-                </group>
-                <group>
-                  <group string="Drive I permission">
-                    <field name="drive_i_permission_access" widget="radio"/>
-                  </group>
-                  <group string="Other drive">
-                    <field name="other_drive_permission_access" widget="radio"/>
-                    <field name="drive_note"/>
-                  </group>
-                </group>
+
+
               </page>
               <page string="Odoo">
                 <group>
                   <header>
                     <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state" attrs="{'invisible':['|',('it_progress_state','in',['draft','requested_by_hr']),('odoo_standard_progress_state','in',['draft','process_by_odoo_team'])]}"/>
+                    <button class="btn-primary" string="Complete" type="object" name="odoo_state_complete_by_hr" attrs="{'invisible':[('odoo_standard_progress_state','!=','process_by_odoo_team')]}"/>
                     <field name="odoo_standard_progress_state" widget="statusbar"/>
                   </header>
                 </group>
@@ -100,29 +97,6 @@
                   <group string="Standard Access">
                     <field name="user_odoo_standard_access" nolabel="1" widget="many2many_checkboxes"/>
                   </group>
-                </group>
-              </page>
-              <page string="Odoo Access">
-                <group>
-                  <header>
-                    <button class="btn-primary" name="odoo_grant_access_by_head" groups="smg_create_user.smg_create_user_hr_team" string="Request Grant access" type="object" attrs="{'invisible':[('odoo_standard_progress_state','in',['draft','process_by_odoo_team','fwd_by_it','requested_by_head_department'])]}"/>
-                    <button class="btn-primary" name="odoo_grant_access_complete_by_odoo_team" string="Complete Request" type="object" groups="smg_create_user.smg_create_user_odoo_team" attrs="{'invisible':[('odoo_standard_progress_state','in',['draft'])]}"/>
-                    <field name="odoo_grant_progress_state" widget="statusbar"/>
-                  </header>
-                </group>
-                <group>
-                  <field name="user_odoo_grant_access" nolabel="1"/>
-                </group>
-              </page>
-              <page string="Att Card">
-                <group string="Access door">
-                    <group>
-                      <field name="card_aceess_floor_door" widget="many2many_checkboxes"/>
-                    </group>
-                    <group>
-                      <field name="description"/>
-                      <field name="attendance_card_create"/>
-                    </group>
                 </group>
               </page>
               <page string="Account">
@@ -168,6 +142,10 @@
                   string="REQ.Standard User"
                   context="{'xml_id':'smg_create_user_action_window'}"
                   help="show the contract for this vehicle"/>
+            <button string="Req.Drive and Odoo Access"
+                    type="action"
+                    name="%(action_smg_drive_and_odoo)d"
+                    class="btn-primary"/>
           </header>
         </xpath>
       </field>
@@ -237,7 +215,5 @@
             action="smg_floor_action"
             parent="hr.menu_human_resources_configuration"
             sequence="1"/>
-
-
   </data>
 </odoo>

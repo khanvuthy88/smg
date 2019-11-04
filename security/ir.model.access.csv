@@ -3,3 +3,7 @@ smg_create_user_group_hr, Model admin access,model_smg_user_info,smg_create_user
 smg_create_user_group_it, Model admin access,model_smg_user_info,smg_create_user.smg_create_user_it_team,1,1,1,0
 smg_create_user_group_odoo, Model admin access,model_smg_user_info,smg_create_user.smg_create_user_odoo_team,1,1,1,0
 smg_create_user_group_mis, Model admin access,model_smg_user_info,smg_create_user.smg_create_user_mis_team,1,1,1,0
+smg_drive_and_odoo_group_hr, Model admin access,model_smg_drive_odoo,smg_create_user.smg_create_user_hr_team,1,1,1,0
+smg_drive_and_odoo_group_it, Model admin access,model_smg_drive_odoo,smg_create_user.smg_create_user_it_team,1,1,1,0
+smg_drive_and_odoo_group_odoo, Model admin access,model_smg_drive_odoo,smg_create_user.smg_create_user_odoo_team,1,1,1,0
+smg_drive_and_odoo_group_mis, Model admin access,model_smg_drive_odoo,smg_create_user.smg_create_user_mis_team,1,1,1,0

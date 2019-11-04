@@ -31,8 +31,9 @@ class SMGUserInfo(models.Model):
         odoo_progress_state_list = [
             ('draft', 'Draft'),
             ('fwd_by_it', 'FWD by IT'),
-            ('requested_by_head_department', 'Requested by Head'),
-            ('process_by_odoo_team', 'Processed by Odoo')
+            ('requested_by_head_department', 'Requested by HR'),
+            ('process_by_odoo_team', 'Processed by Odoo'),
+            ('completed_by_hr', 'Complete')
         ]
         return odoo_progress_state_list
 
@@ -81,9 +82,6 @@ class SMGUserInfo(models.Model):
         ('done', 'Completed by HR'),
     ], 'Status', default='draft')
 
-    drive_i_permission_access = fields.Selection(selection= department_drive_selectin_permission, string='Drive I', default='na', track_visibility='always')
-    other_drive_permission_access = fields.Selection(selection=department_drive_selectin_permission, string="Other drive",
-                                                     default='na', track_visibility='always')
     drive_p_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive P', default='read_and_write', track_visibility='always')
     drive_z_permission_access = fields.Selection(selection= drive_selection_permission, string='Drive Z', default='read_and_write', track_visibility='always')
     drive_note = fields.Text(string="Remark")
@@ -128,7 +126,7 @@ class SMGUserInfo(models.Model):
     # Add field many2many to table res.group
     # This field using in odoo tab for allow permission access to app
     user_odoo_standard_access = fields.Many2many('res.groups', domain=[('user_standard_acess', '=', True)])
-    user_odoo_grant_access = fields.Many2many('res.groups', domain=[('user_grant_access', '=', True)])
+    user_id = fields.Many2one('res.users')
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
@@ -142,6 +140,15 @@ class SMGUserInfo(models.Model):
             self.position = self.employee_id.job_id.id
             self.company_name = self.employee_id.company_id.id
 
+
+    @api.multi
+    def odoo_state_complete_by_hr(self):
+        # Update record user_id (Related user) in employee form to created user
+        for record in self.employee_id:
+            record.write({
+                'user_id': record.user_id.id,
+            })
+        return self.write({'odoo_standard_progress_state': 'completed_by_hr'})
 
     @api.multi
     def odoo_grant_access_by_head(self):
@@ -265,13 +272,16 @@ class SMGUserInfo(models.Model):
 
     @api.multi
     def odoo_complete_state(self):
-        # Update odoo state
-        self.write({'odoo_standard_progress_state': 'process_by_odoo_team'})
 
         # Create user in odoo system
         user_obj = self.env['res.users'].create({
             'name': self.odoo_user_for.display_name,
             'login': self.odoo_username_login,
+        })
+
+        self.write({
+            'user_id': user_obj.id,
+            'odoo_standard_progress_state': 'process_by_odoo_team'
         })
 
         # Update record user_id (Related user) in employee form to created user
@@ -386,9 +396,79 @@ class SMGEmployee(models.Model):
         return False
 
 
-
 class SMGResgroup(models.Model):
     _inherit = ['res.groups']
 
     user_standard_acess = fields.Boolean(string="User Standard Access", default=False)
     user_grant_access = fields.Boolean(string="User Grant Access", default=False)
+
+
+class SMGDriveAndOdoo(models.Model):
+    _name="smg.drive.odoo"
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+
+    @api.multi
+    def department_drive_selectin_permission(self):
+        permission_list = [
+            ('read', 'Read'),
+            ('write', 'Write'),
+            ('read_and_write', 'Read & Write'),
+            ('na', 'N/A'),
+        ]
+        return permission_list
+
+    @api.multi
+    def drive_request_list(self):
+        state_list = [
+            ('draft','Draft'),
+            ('requested_by_head','Request by Head'),
+            ('it_process_completed','Processed by IT'),
+            ('head_make_done','Done')
+        ]
+        return state_list
+
+    @api.multi
+    def odoo_request_list(self):
+        state_list = [
+            ('draft','Draft'),
+            ('requested_by_head','Request by Head'),
+            ('it_process_completed','Processed by Odoo'),
+            ('head_make_done','Done')
+        ]
+        return state_list
+
+    name = fields.Char()
+    drive_state = fields.Selection(selection=drive_request_list, string="State", default='draft', track_visibility='always')
+    odoo_state = fields.Selection(selection=odoo_request_list, string="State", default='draft', track_visibility='always')
+    drive_i_permission_access = fields.Selection(selection=department_drive_selectin_permission, string='Drive I',
+                                                 default='na', track_visibility='always')
+    other_drive_permission_access = fields.Selection(selection=department_drive_selectin_permission,
+                                                     string="Other drive",
+                                                     default='na', track_visibility='always')
+    drive_note = fields.Text(string="Note")
+    user_odoo_grant_access = fields.Many2many('res.groups', domain=[('user_grant_access', '=', True)])
+
+    @api.multi
+    def action_head_make_request_drive(self):
+        return self.write({'drive_state': 'requested_by_head'})
+
+    @api.multi
+    def action_make_it_complete_by_it(self):
+        return self.write({'drive_state': 'it_process_completed'})
+
+    @api.multi
+    def action_make_it_done_by_head_drive(self):
+        return self.write({'drive_state': 'head_make_done'})
+
+    @api.multi
+    def action_head_make_request_odoo(self):
+        return self.write({'odoo_state': 'requested_by_head'})
+
+    @api.multi
+    def action_make_it_complete_by_odoo(self):
+        return self.write({'odoo_state': 'it_process_completed'})
+
+    @api.multi
+    def action_make_it_done_by_head_odoo(self):
+        return self.write({'odoo_state': 'head_make_done'})
+
