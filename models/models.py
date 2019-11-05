@@ -405,6 +405,45 @@ class SMGEmployee(models.Model):
 
         return False
 
+    @api.multi
+    def action_open_form_view(self, context=None):
+        employee = self.env['smg.drive.odoo'].search([('employee_id', 'in', [self.id])])
+        if employee:
+            context = dict(self.env.context)
+            form_id = self.env.ref('smg_create_user.smg_drive_and_odoo_form')
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Edit',
+                'res_id': employee.id,
+                'res_model': 'smg.drive.odoo',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'view_id': form_id.id,
+                'context': context,
+                'target': 'current',
+            }
+        else:
+            employee_obj = self.env['hr.employee'].search([('id', 'in', [self.id])])
+            employee_info = "<h1>{}</h1><ul><li>Employee Id: {}</li><li>Position:{}</li><li>Department: {}</li>".format(
+                employee_obj.display_name, employee_obj.smg_empid, employee_obj.job_id.display_name,
+                employee_obj.department_id.display_name)
+            ctx = {
+                'default_name': employee_obj.display_name,
+                'default_employee_id': employee_obj.id,
+                'default_employee_information': employee_info
+            }
+            form_id = self.env.ref('smg_create_user.smg_drive_and_odoo_form')
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Edit',
+                'res_model': 'smg.drive.odoo',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'view_id': form_id.id,
+                'context': ctx,
+                'flags': {'initial_mode': 'edit'},
+                'target': 'current',
+            }
 
 class SMGResgroup(models.Model):
     _inherit = ['res.groups']
@@ -448,7 +487,9 @@ class SMGDriveAndOdoo(models.Model):
         return state_list
 
     name = fields.Char()
+    employee_id = fields.Many2one('hr.employee', string="Employee")
     drive_state = fields.Selection(selection=drive_request_list, string="State", default='draft', track_visibility='always')
+    employee_information = fields.Text(string='Employee Info')
     odoo_state = fields.Selection(selection=odoo_request_list, string="State", default='draft', track_visibility='always')
     drive_i_permission_access = fields.Selection(selection=department_drive_selectin_permission, string='Drive I',
                                                  default='na', track_visibility='always')

@@ -142,9 +142,9 @@
                   string="REQ.Standard User"
                   context="{'xml_id':'smg_create_user_action_window'}"
                   help="show the contract for this vehicle"/>
-            <button string="Req.Drive and Odoo Access"
-                    type="action"
-                    name="%(action_smg_drive_and_odoo)d"
+            <button string="Req.Drive"
+                    type="object"
+                    name="action_open_form_view"
                     class="btn-primary"/>
           </header>
         </xpath>
