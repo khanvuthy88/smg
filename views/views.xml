@@ -84,7 +84,7 @@
               <page string="Odoo">
                 <group>
                   <header>
-                    <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state" attrs="{'invisible':['|',('it_progress_state','in',['draft','requested_by_hr']),('odoo_standard_progress_state','in',['draft','process_by_odoo_team'])]}"/>
+                    <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state" attrs="{'invisible':[('odoo_standard_progress_state','!=','fwd_by_it')]}"/>
                     <button class="btn-primary" string="Complete" type="object" name="odoo_state_complete_by_hr" attrs="{'invisible':[('odoo_standard_progress_state','!=','process_by_odoo_team')]}"/>
                     <field name="odoo_standard_progress_state" widget="statusbar"/>
                   </header>

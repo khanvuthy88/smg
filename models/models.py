@@ -146,9 +146,18 @@ class SMGUserInfo(models.Model):
         # Update record user_id (Related user) in employee form to created user
         employee = self.env['hr.employee'].search([('id', '=', self.employee_id.id)])
         for record in employee:
-            record.write({
-                'user_id': record.user_id.id,
+            record.sudo().write({
+                'user_id': self.user_id.id,
             })
+        # Update record in res.partner by Related Partner (partner_id)
+        related_partner = self.env['res.partner'].search([('id', 'in', [self.user_id.partner_id.id])])
+        for record in related_partner:
+            record.sudo().write({
+                'parent_id': self.employee_id.address_id.id,
+                'mobile': self.employee_id.mobile_phone,
+                'email': self.employee_id.work_email
+            })
+
         return self.write({'odoo_standard_progress_state': 'completed_by_hr'})
 
     @api.multi
