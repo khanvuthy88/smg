@@ -144,7 +144,8 @@ class SMGUserInfo(models.Model):
     @api.multi
     def odoo_state_complete_by_hr(self):
         # Update record user_id (Related user) in employee form to created user
-        for record in self.employee_id:
+        employee = self.env['hr.employee'].search([('id', '=', self.employee_id.id)])
+        for record in employee:
             record.write({
                 'user_id': record.user_id.id,
             })
