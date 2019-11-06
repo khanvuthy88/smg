@@ -283,9 +283,10 @@ class SMGUserInfo(models.Model):
     @api.multi
     def odoo_complete_state(self):
 
+        full_name = "{} {}".format(self.first_name, self.last_name)
         # Create user in odoo system
         user_obj = self.env['res.users'].sudo().create({
-            'name': self.employee_id.display_name,
+            'name': self.full_name,
             'login': self.odoo_username_login,
         })
 
