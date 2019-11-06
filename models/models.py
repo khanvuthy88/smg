@@ -158,17 +158,17 @@ class SMGUserInfo(models.Model):
                 'email': self.employee_id.work_email
             })
 
-        return self.write({'odoo_standard_progress_state': 'completed_by_hr'})
+        return self.sudo().write({'odoo_standard_progress_state': 'completed_by_hr'})
 
     @api.multi
     def odoo_grant_access_by_head(self):
-        return self.write({
+        return self.sudo().write({
             'odoo_grant_progress_state': 'requested_by_head_department',
         })
 
     @api.multi
     def odoo_grant_access_complete_by_odoo_team(self):
-        return self.write({
+        return self.sudo().write({
             'odoo_grant_progress_state': 'process_by_odoo_team',
         })
 
@@ -209,8 +209,8 @@ class SMGUserInfo(models.Model):
 
     @api.multi
     def requested_by_hr(self):
-        # return self.write({'it_progress_state': 'requested_by_hr'})
-        self.write({'it_progress_state': 'requested_by_hr'})
+        # return self.sudo().write({'it_progress_state': 'requested_by_hr'})
+        self.sudo().write({'it_progress_state': 'requested_by_hr'})
 
         help_desk_team = self.env['helpdesk.team'].search([('id', '=', 2)])
         ticket_type = self.env['helpdesk.ticket.type'].search([('id', '=', 15)])
@@ -233,7 +233,7 @@ class SMGUserInfo(models.Model):
     @api.multi
     def precessed_by_it(self):
         # Update IT state and update Odoo tab Field
-        self.write({
+        self.sudo().write({
             'it_progress_state': 'process_by_it',
             'odoo_user_for': self.employee_id.id,
             'odoo_requested_by': 'IT',
@@ -267,7 +267,7 @@ class SMGUserInfo(models.Model):
     def completed_by_hr(self):
         for record in self.employee_id:
             record.sudo().write({'work_email': self.initial_email})
-        return self.write({'it_progress_state': 'done'})
+        return self.sudo().write({'it_progress_state': 'done'})
 
     @api.multi
     def view_user_ticket(self):
@@ -501,25 +501,25 @@ class SMGDriveAndOdoo(models.Model):
 
     @api.multi
     def action_head_make_request_drive(self):
-        return self.write({'drive_state': 'requested_by_head'})
+        return self.sudo().write({'drive_state': 'requested_by_head'})
 
     @api.multi
     def action_make_it_complete_by_it(self):
-        return self.write({'drive_state': 'it_process_completed'})
+        return self.sudo().write({'drive_state': 'it_process_completed'})
 
     @api.multi
     def action_make_it_done_by_head_drive(self):
-        return self.write({'drive_state': 'head_make_done'})
+        return self.sudo().write({'drive_state': 'head_make_done'})
 
     @api.multi
     def action_head_make_request_odoo(self):
-        return self.write({'odoo_state': 'requested_by_head'})
+        return self.sudo().write({'odoo_state': 'requested_by_head'})
 
     @api.multi
     def action_make_it_complete_by_odoo(self):
-        return self.write({'odoo_state': 'it_process_completed'})
+        return self.sudo().write({'odoo_state': 'it_process_completed'})
 
     @api.multi
     def action_make_it_done_by_head_odoo(self):
-        return self.write({'odoo_state': 'head_make_done'})
+        return self.sudo().write({'odoo_state': 'head_make_done'})
 
