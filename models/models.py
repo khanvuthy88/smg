@@ -217,7 +217,7 @@ class SMGUserInfo(models.Model):
         ticket_tag = self.env['helpdesk.tag'].search([('id', '=', 39)])
 
         description = "Request create user for {}".format(self.name)
-        ticket_obj = self.env['helpdesk.ticket'].create({
+        ticket_obj = self.env['helpdesk.ticket'].sudo().create({
             'name': self.name,
             'partner_id': self.env.user.partner_id.id,
             'partner_name': self.env.user.partner_id.display_name,
@@ -250,7 +250,7 @@ class SMGUserInfo(models.Model):
         ticket_tag = self.env['helpdesk.tag'].search([('id', '=', 42)])
 
         description = "Request create user for {} in Odoo system.".format(self.name)
-        ticket_obj = self.env['helpdesk.ticket'].create({
+        ticket_obj = self.env['helpdesk.ticket'].sudo().create({
             'name': self.name,
             'partner_id': self.env.user.partner_id.id,
             'partner_name': self.env.user.partner_id.display_name,
@@ -266,7 +266,7 @@ class SMGUserInfo(models.Model):
     @api.multi
     def completed_by_hr(self):
         for record in self.employee_id:
-            record.write({'work_email': self.initial_email})
+            record.sudo().write({'work_email': self.initial_email})
         return self.write({'it_progress_state': 'done'})
 
     @api.multi
@@ -284,12 +284,12 @@ class SMGUserInfo(models.Model):
     def odoo_complete_state(self):
 
         # Create user in odoo system
-        user_obj = self.env['res.users'].create({
+        user_obj = self.env['res.users'].sudo().create({
             'name': self.odoo_user_for.display_name,
             'login': self.odoo_username_login,
         })
 
-        self.write({
+        self.sudo().write({
             'user_id': user_obj.id,
             'odoo_standard_progress_state': 'process_by_odoo_team'
         })
