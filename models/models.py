@@ -286,7 +286,7 @@ class SMGUserInfo(models.Model):
         full_name = "{} {}".format(self.first_name, self.last_name)
         # Create user in odoo system
         user_obj = self.env['res.users'].sudo().create({
-            'name': self.full_name,
+            'name': full_name,
             'login': self.odoo_username_login,
         })
 
