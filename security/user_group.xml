@@ -8,7 +8,7 @@
 
     <record id="smg_create_user_it_team" model="res.groups">
         <field name="name">IT Team</field>
-<!--        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>-->
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
         <field name="users" eval="[(4, ref('base.user_root'))]"/>
         <field name="category_id" ref="smg_create_user.module_management"/>
         <field name="comment">IT Team group users</field>
@@ -16,22 +16,60 @@
 
     <record id="smg_create_user_hr_team" model="res.groups">
         <field name="name">HR Team</field>
-<!--        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>-->
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
         <field name="users" eval="[(4, ref('base.user_root'))]"/>
         <field name="category_id" ref="smg_create_user.module_management"/>
     </record>
 
     <record id="smg_create_user_odoo_team" model="res.groups">
         <field name="name">Odoo Team</field>
-<!--        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>-->
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
         <field name="users" eval="[(4, ref('base.user_root'))]"/>
         <field name="category_id" ref="smg_create_user.module_management"/>
     </record>
 
     <record id="smg_create_user_mis_team" model="res.groups">
         <field name="name">MIS Team</field>
-<!--        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>-->
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
         <field name="users" eval="[(4, ref('base.user_root'))]"/>
         <field name="category_id" ref="smg_create_user.module_management"/>
+    </record>
+
+    <!--    Rule for portal user-->
+     <record id="smg_create_user_hr_rule" model="ir.rule">
+        <field name="name">SMG Create HR Team</field>
+        <field name="model_id" ref="smg_create_user.model_smg_user_info"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="groups" eval="[(4,ref('smg_create_user.smg_create_user_hr_team'))]"/>
+    </record>
+    <record id="smg_create_user_it_rule" model="ir.rule">
+        <field name="name">SMG Create IT Team</field>
+        <field name="model_id" ref="smg_create_user.model_smg_user_info"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="groups" eval="[(4,ref('smg_create_user.smg_create_user_it_team'))]"/>
+    </record>
+    <record id="smg_create_user_odoo_rule" model="ir.rule">
+        <field name="name">SMG Create Odoo Team</field>
+        <field name="model_id" ref="smg_create_user.model_smg_user_info"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="groups" eval="[(4,ref('smg_create_user.smg_create_user_odoo_team'))]"/>
+    </record>
+    <record id="smg_create_user_mis_rule" model="ir.rule">
+        <field name="name">SMG Create MIS Team</field>
+        <field name="model_id" ref="smg_create_user.model_smg_user_info"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="groups" eval="[(4,ref('smg_create_user.smg_create_user_mis_team'))]"/>
     </record>
 </odoo>

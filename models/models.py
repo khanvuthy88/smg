@@ -176,7 +176,6 @@ class SMGUserInfo(models.Model):
     def create(self, vals):
         # Add employee and his manager to follower but to add follower is possible only partner (res.partner) and user(
         # res.user) and hr.employee relation with res.partner with field : Private Address (address_home_id)
-
         partner_ids = []
         employee = self.env['hr.employee'].search([('id', '=', vals['employee_id'])])
         if employee.address_home_id:
@@ -184,7 +183,14 @@ class SMGUserInfo(models.Model):
         if 'manager' in vals:
             manager = self.env['hr.employee'].search([('id', '=', vals['manager'])])
             if manager.address_home_id:
-                partner_ids.append(manager.address_home_id.id)
+                partner_id = manager.address_home_id.id
+                partner_ids.append(partner_id)
+            else:
+                partner_id = manager.user_id.partner_id.id
+                partner_ids.append(partner_id)
+                manager.write({
+                    'address_home_id': partner_id
+                })
         user = super(SMGUserInfo, self).create(vals)
         if partner_ids:
             user.message_subscribe(partner_ids=partner_ids)

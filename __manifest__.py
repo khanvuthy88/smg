@@ -30,6 +30,7 @@
         'views/views.xml',
         'views/helpdesk.xml',
         'views/templates.xml',
+        'data/floor_simple_data.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
