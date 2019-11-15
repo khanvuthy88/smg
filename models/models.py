@@ -5,7 +5,7 @@ from odoo import models, fields, api
 
 class SMGUserInfo(models.Model):
     _name = "smg.user.info"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin','portal.mixin']
 
     @api.multi
     def drive_selection_permission(self):
@@ -127,6 +127,8 @@ class SMGUserInfo(models.Model):
     # This field using in odoo tab for allow permission access to app
     user_odoo_standard_access = fields.Many2many('res.groups', domain=[('user_standard_acess', '=', True)])
     user_id = fields.Many2one('res.users')
+    activity_date_deadline = fields.Date(string='Next Activity Deadline', related='activity_ids.date_deadline',
+                                         groups='base.group_portal,base.group_user')
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
@@ -381,7 +383,7 @@ class SMGEmployee(models.Model):
                 email = '@{}'.format('somagroup.com.kh')
 
                 context = dict(
-                    default_employee_id_number = self.smg_empid,
+                    # default_employee_id_number = self.smg_empid,
                     default_employee_id=self.id,
                     default_name=self.name,
                     default_first_name = first_name.isupper(),
@@ -461,7 +463,7 @@ class SMGResgroup(models.Model):
 
 class SMGDriveAndOdoo(models.Model):
     _name="smg.drive.odoo"
-    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _inherit = ['mail.thread', 'mail.activity.mixin','portal.mixin']
 
     @api.multi
     def department_drive_selectin_permission(self):
@@ -505,6 +507,8 @@ class SMGDriveAndOdoo(models.Model):
                                                      default='na', track_visibility='always')
     drive_note = fields.Text(string="Note")
     user_odoo_grant_access = fields.Many2many('res.groups', domain=[('user_grant_access', '=', True)])
+    activity_date_deadline = fields.Date(string='Next Activity Deadline', related='activity_ids.date_deadline',
+                                         groups='base.group_portal,base.group_user')
 
     @api.multi
     def action_head_make_request_drive(self):
