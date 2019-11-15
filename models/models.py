@@ -145,12 +145,7 @@ class SMGUserInfo(models.Model):
 
     @api.multi
     def odoo_state_complete_by_hr(self):
-        # Update record user_id (Related user) in employee form to created user
         employee = self.env['hr.employee'].search([('id', '=', self.employee_id.id)])
-        for record in employee:
-            record.sudo().write({
-                'user_id': self.user_id.id,
-            })
         # Update record in res.partner by Related Partner (partner_id)
         related_partner = self.env['res.partner'].search([('id', 'in', [self.user_id.partner_id.id])])
         for record in related_partner:
@@ -158,6 +153,13 @@ class SMGUserInfo(models.Model):
                 'parent_id': self.employee_id.address_home_id.id,
                 'mobile': self.employee_id.mobile_phone,
                 'email': self.employee_id.work_email
+            })
+
+        # Update record user_id (Related user) and address_home_id (Private Address) field in employee form to created user
+        for record in employee:
+            record.sudo().write({
+                'address_home_id': self.related_partner.id,
+                'user_id': self.user_id.id,
             })
 
         return self.sudo().write({'odoo_standard_progress_state': 'completed_by_hr'})
