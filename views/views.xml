@@ -33,7 +33,7 @@
                 </h1>
             </div>
             <group>
-              <group string="Personal Info">
+              <group string="Employee Info">
                 <field name="employee_id"/>
                 <field name="last_name"/>
                 <field name="first_name"/>
@@ -41,7 +41,7 @@
                 <field name="telegram_id"/>
                 <field name="start_date"/>
               </group>
-              <group string="Manager info">
+              <group string="Other info">
                 <field name="company_name"/>
                 <field name="department"/>
                 <field name="position"/>

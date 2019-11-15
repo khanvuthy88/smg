@@ -121,7 +121,7 @@ class SMGUserInfo(models.Model):
         ('5th_floor', '5th Floor'),
         ('6th_floor', '6th Floor'),
         ('7th_floor', '6th Floor')
-    ],"Card access door")
+    ],"Floor")
 
     # Add field many2many to table res.group
     # This field using in odoo tab for allow permission access to app
