@@ -72,7 +72,7 @@ class SMGUserInfo(models.Model):
 
     # Noted by HR
     description = fields.Text()
-    attendance_card_create = fields.Boolean(string="Attendance Card Created")
+    attendance_card_create = fields.Boolean(string="Access Card Created")
 
     # Drive access
     drive_progress_state = fields.Selection([
