@@ -155,7 +155,7 @@ class SMGUserInfo(models.Model):
         related_partner = self.env['res.partner'].search([('id', 'in', [self.user_id.partner_id.id])])
         for record in related_partner:
             record.sudo().write({
-                'parent_id': self.employee_id.address_id.id,
+                'parent_id': self.employee_id.address_home_id.id,
                 'mobile': self.employee_id.mobile_phone,
                 'email': self.employee_id.work_email
             })
