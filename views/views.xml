@@ -69,13 +69,13 @@
                 </group>
                 <group>
                   <group string="User info">
-                    <field name="username" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
-                    <field name="initial_password" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
-                    <field name="initial_email" attrs="{'readonly':[('it_progress_state','=','process_by_it')]}" />
+                    <field name="username"/>
+                    <field name="initial_password"/>
+                    <field name="initial_email"/>
                   </group>
                   <group string="Standard Drive">
-                      <field name="drive_p_permission_access" widget="selection"/>
-                      <field name="drive_z_permission_access" widget="selection"/>
+                      <field name="drive_p_permission_access" widget="selection" attrs="{'readonly':True}"/>
+                      <field name="drive_z_permission_access" widget="selection" attrs="{'readonly':True}"/>
                   </group>
                 </group>
 

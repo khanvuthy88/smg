@@ -112,5 +112,11 @@
             <field name="context">{'default_employee_id': active_id}</field>
             <field name="target">current</field>
         </record>
+
+        <menuitem
+            id="smg_drive_and_odoo_menu_view_form"
+            action="action_smg_drive_and_odoo"
+            parent="hr.menu_human_resources_configuration"
+            sequence="1"/>
     </data>
 </odoo>

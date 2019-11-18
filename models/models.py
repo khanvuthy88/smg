@@ -129,6 +129,16 @@ class SMGUserInfo(models.Model):
     user_id = fields.Many2one('res.users')
     activity_date_deadline = fields.Date(string='Next Activity Deadline', related='activity_ids.date_deadline',
                                          groups='base.group_portal,base.group_user')
+    current_login_user = fields.Boolean(string="check field", compute='_get_user')
+
+    @api.depends('current_login_user')
+    def _get_user(self):
+        res_user = self.env['res.users'].search([('id', '=', self._uid)])
+        if res_user.has_group('sale.group_sale_salesman') and not res_user.has_group(
+                'sale.group_sale_salesman_all_leads'):
+            self.current_login_user = True
+        else:
+            self.current_login_user = False
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
@@ -254,6 +264,14 @@ class SMGUserInfo(models.Model):
             # 'odoo_user_password': self.initial_password,
         })
 
+        return ticket_obj
+
+    @api.multi
+    def completed_by_hr(self):
+        for record in self.employee_id:
+            record.sudo().write({'work_email': self.initial_email})
+        self.sudo().write({'it_progress_state': 'done'})
+
         # Prepare to create ticket
         help_desk_team = self.env['helpdesk.team'].search([('id', '=', 1)])
         ticket_type = self.env['helpdesk.ticket.type'].search([('id', '=', 15)])
@@ -270,14 +288,7 @@ class SMGUserInfo(models.Model):
             'tag_ids': [(4, ticket_tag.id)],
             'description': description,
         })
-
         return ticket_obj
-
-    @api.multi
-    def completed_by_hr(self):
-        for record in self.employee_id:
-            record.sudo().write({'work_email': self.initial_email})
-        return self.sudo().write({'it_progress_state': 'done'})
 
     @api.multi
     def view_user_ticket(self):
@@ -394,9 +405,9 @@ class SMGEmployee(models.Model):
                     default_manager=self.parent_id.id,
                     default_position=self.job_id.id,
                     default_company_name=self.company_id.id,
-                    default_username=username,
+                    # default_username=username,
                     # default_initial_password=password,
-                    default_initial_email=email,
+                    # default_initial_email=email,
                     group_by=False
                 )
                 context['form_view_initial_mode'] = 'edit'
