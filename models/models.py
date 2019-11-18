@@ -253,7 +253,7 @@ class SMGUserInfo(models.Model):
     @api.multi
     def precessed_by_it(self):
         # Update IT state and update Odoo tab Field
-        self.sudo().write({
+        return self.sudo().write({
             'it_progress_state': 'process_by_it',
             'odoo_user_for': self.employee_id.id,
             'odoo_requested_by': 'IT',
@@ -263,8 +263,6 @@ class SMGUserInfo(models.Model):
             'odoo_user_password': 'Smg$123',
             # 'odoo_user_password': self.initial_password,
         })
-
-        return ticket_obj
 
     @api.multi
     def completed_by_hr(self):
