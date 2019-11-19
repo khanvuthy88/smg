@@ -168,23 +168,6 @@ class SMGUserInfo(models.Model):
 
     @api.multi
     def odoo_state_complete_by_hr(self):
-        employee = self.env['hr.employee'].search([('id', '=', self.employee_id.id)])
-        # Update record in res.partner by Related Partner (partner_id)
-        related_partner = self.env['res.partner'].search([('id', 'in', [self.user_id.partner_id.id])])
-        for record in related_partner:
-            record.sudo().write({
-                'parent_id': self.employee_id.address_id.id,
-                'mobile': self.employee_id.mobile_phone,
-                'email': self.employee_id.work_email
-            })
-
-        # Update record user_id (Related user) and address_home_id (Private Address) field in employee form to created user
-        for record in employee:
-            record.sudo().write({
-                'address_home_id': related_partner.id,
-                'user_id': self.user_id.id,
-            })
-
         return self.sudo().write({'odoo_standard_progress_state': 'completed_by_hr'})
 
     @api.multi
@@ -270,7 +253,6 @@ class SMGUserInfo(models.Model):
             'it_progress_state': 'process_by_it',
             'odoo_user_for': self.employee_id.id,
             'odoo_requested_by': 'IT',
-            'odoo_standard_progress_state': 'fwd_by_it',
             'odoo_email_address': self.initial_email,
             'odoo_username_login': self.initial_email,
             'odoo_user_password': 'Smg$123',
@@ -279,6 +261,9 @@ class SMGUserInfo(models.Model):
 
     @api.multi
     def completed_by_hr(self):
+        self.write({
+            'odoo_standard_progress_state': 'requested_by_head_department',
+        })
         for record in self.employee_id:
             record.sudo().write({'work_email': self.initial_email})
         self.sudo().write({'it_progress_state': 'done'})
@@ -326,6 +311,23 @@ class SMGUserInfo(models.Model):
             'user_id': user_obj.id,
             'odoo_standard_progress_state': 'process_by_odoo_team'
         })
+
+        employee = self.env['hr.employee'].search([('id', '=', self.employee_id.id)])
+        # Update record in res.partner by Related Partner (partner_id)
+        related_partner = self.env['res.partner'].search([('id', 'in', [self.user_id.partner_id.id])])
+        for record in related_partner:
+            record.sudo().write({
+                'parent_id': self.employee_id.address_id.id,
+                'mobile': self.employee_id.mobile_phone,
+                'email': self.employee_id.work_email
+            })
+
+        # Update record user_id (Related user) and address_home_id (Private Address) field in employee form to created user
+        for record in employee:
+            record.sudo().write({
+                'address_home_id': related_partner.id,
+                'user_id': self.user_id.id,
+            })
 
         # Update record user_id (Related user) in employee form to created user
         # for record in self.employee_id:
