@@ -49,7 +49,7 @@ class SMGUserInfo(models.Model):
     name = fields.Char(track_visibility='always')
     state = fields.Selection([('new_user', 'New User'), ('user_movement', 'User Movement'), ('user_termination', 'User Termination')], 'State', default='new_user', track_visibility='always')
     employee_id = fields.Many2one('hr.employee', string="Employee", )
-    first_name = fields.Char(string="First name")
+    first_name = fields.Char(string="First name", readonly=[])
     last_name = fields.Char(string='Last name')
     employee_id_number = fields.Char(string="Employee ID")
     telegram_id = fields.Char(string="Telegram ID")
@@ -129,16 +129,7 @@ class SMGUserInfo(models.Model):
     user_id = fields.Many2one('res.users')
     activity_date_deadline = fields.Date(string='Next Activity Deadline', related='activity_ids.date_deadline',
                                          groups='base.group_portal,base.group_user')
-    current_login_user = fields.Boolean(string="check field", compute='_get_user')
-
-    @api.depends('current_login_user')
-    def _get_user(self):
-        res_user = self.env['res.users'].search([('id', '=', self._uid)])
-        if res_user.has_group('sale.group_sale_salesman') and not res_user.has_group(
-                'sale.group_sale_salesman_all_leads'):
-            self.current_login_user = True
-        else:
-            self.current_login_user = False
+    current_user = fields.Many2one('res.users', 'Current User', default=lambda self: self.env.user)
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):

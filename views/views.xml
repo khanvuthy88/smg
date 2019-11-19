@@ -33,9 +33,10 @@
                 </h1>
             </div>
             <group>
+              <field name="current_user"/>
               <group string="Employee Info">
                 <field name="employee_id"/>
-                <field name="last_name"/>
+                <field name="last_name" attrs="{'readonly':[('current_user','in',['smg_create_user_it_team'])]}"/>
                 <field name="first_name"/>
                 <field name="employee_id_number"/>
                 <field name="telegram_id"/>
