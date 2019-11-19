@@ -46,9 +46,10 @@ class SMGUserInfo(models.Model):
         ]
         return progress_state_list
 
+    current_user = fields.Many2one('res.users', 'Current User', default=lambda self: self.env.user)
     name = fields.Char(track_visibility='always')
     state = fields.Selection([('new_user', 'New User'), ('user_movement', 'User Movement'), ('user_termination', 'User Termination')], 'State', default='new_user', track_visibility='always')
-    employee_id = fields.Many2one('hr.employee', string="Employee", )
+    employee_id = fields.Many2one('hr.employee', string="Employee")
     first_name = fields.Char(string="First name", readonly=[])
     last_name = fields.Char(string='Last name')
     employee_id_number = fields.Char(string="Employee ID")
@@ -129,7 +130,28 @@ class SMGUserInfo(models.Model):
     user_id = fields.Many2one('res.users')
     activity_date_deadline = fields.Date(string='Next Activity Deadline', related='activity_ids.date_deadline',
                                          groups='base.group_portal,base.group_user')
-    current_user = fields.Many2one('res.users', 'Current User', default=lambda self: self.env.user)
+    is_it_team = fields.Boolean(compute='_get_current_user_team')
+    is_hr_team = fields.Boolean(compute='_get_current_user_team')
+    is_odoo_team = fields.Boolean(compute='_get_current_user_team')
+    is_mis_team = fields.Boolean(compute='_get_current_user_team')
+
+    @api.depends('current_user')
+    def _get_current_user_team(self):
+        if self.current_user.has_group('smg_create_user.smg_create_user_it_team'):
+            self.is_it_team = True
+        if self.current_user.has_group('smg_create_user.smg_create_user_hr_team'):
+            self.is_hr_team = True
+        if self.current_user.has_group('smg_create_user.smg_create_user_odoo_team'):
+            self.is_odoo_team = True
+        if self.current_user.has_group('smg_create_user.smg_create_user_mis_team'):
+            self.is_mis_team = True
+
+    @api.multi
+    def get_user_type(self, group_string=''):
+        if self.current_user.has_group(group_string):
+            return 1
+        else:
+            return 0
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):

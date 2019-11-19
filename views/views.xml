@@ -33,14 +33,18 @@
                 </h1>
             </div>
             <group>
-              <field name="current_user"/>
+              <field name="is_it_team" attrs="{'invisible':1}"/>
+              <field name="is_hr_team" attrs="{'invisible':1}"/>
+              <field name="is_odoo_team" attrs="{'invisible':1}"/>
+              <field name="is_mis_team" attrs="{'invisible':1}"/>
+
               <group string="Employee Info">
                 <field name="employee_id"/>
-                <field name="last_name" attrs="{'readonly':[('current_user','in',['smg_create_user_it_team'])]}"/>
-                <field name="first_name"/>
-                <field name="employee_id_number"/>
-                <field name="telegram_id"/>
-                <field name="start_date"/>
+                <field name="last_name" attrs="{'readonly':[('is_it_team','=',True)]}"/>
+                <field name="first_name" attrs="{'readonly':[('is_it_team','=',True)]}"/>
+                <field name="employee_id_number" attrs="{'readonly':[('is_it_team','=',True)]}"/>
+                <field name="telegram_id" attrs="{'readonly':[('is_it_team','=',True)]}"/>
+                <field name="start_date" attrs="{'readonly':[('is_it_team','=',True)]}"/>
               </group>
               <group string="Other info">
                 <field name="company_name"/>
@@ -69,10 +73,10 @@
                     </group>
                 </group>
                 <group>
-                  <group string="User info">
-                    <field name="username"/>
-                    <field name="initial_password"/>
-                    <field name="initial_email"/>
+                  <group string="User info" >
+                    <field name="username" attrs="{'readonly':[('is_hr_team','=',True)]}"/>
+                    <field name="initial_password" attrs="{'readonly':[('is_hr_team','=',True)]}"/>
+                    <field name="initial_email" attrs="{'readonly':[('is_hr_team','=',True)]}"/>
                   </group>
                   <group string="Standard Drive">
                       <field name="drive_p_permission_access" widget="selection" attrs="{'readonly':True}"/>
