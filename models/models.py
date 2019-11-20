@@ -46,7 +46,7 @@ class SMGUserInfo(models.Model):
         ]
         return progress_state_list
 
-    current_user = fields.Many2one('res.users', 'Current User', default=lambda self: self.env.user)
+    current_user = fields.Many2one('res.users', 'Current User', compute="_get_corrent_user_who_login")
     name = fields.Char(track_visibility='always')
     state = fields.Selection([('new_user', 'New User'), ('user_movement', 'User Movement'), ('user_termination', 'User Termination')], 'State', default='new_user', track_visibility='always')
     employee_id = fields.Many2one('hr.employee', string="Employee")
@@ -135,6 +135,10 @@ class SMGUserInfo(models.Model):
     is_it_team = fields.Boolean(compute='_get_current_user_team')
     is_odoo_team = fields.Boolean(compute='_get_current_user_team')
     is_mis_team = fields.Boolean(compute='_get_current_user_team')
+
+    @api.multi
+    def _get_corrent_user_who_login(self):
+        return  self.env.user
 
     @api.depends('current_user')
     def _get_current_user_team(self):
