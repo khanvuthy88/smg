@@ -33,11 +33,11 @@
                 </h1>
             </div>
             <group>
-              <field name="is_it_team" invisible="1"/>
-              <field name="is_hr_team" invisible="1"/>
-              <field name="is_odoo_team" invisible="1"/>
-              <field name="is_mis_team" invisible="1"/>
-              <field name="current_user" invisible="1"/>
+              <field name="is_it_team"/>
+              <field name="is_hr_team"/>
+              <field name="is_odoo_team"/>
+              <field name="is_mis_team"/>
+              <field name="current_user"/>
 
               <group string="Employee Info">
                 <field name="employee_id"/>
