@@ -112,7 +112,7 @@ class SMGUserInfo(models.Model):
     has_ticket = fields.Boolean(string="Has ticket", compute="_get_ticket_by_self")
 
     # Access card field
-    card_aceess_floor_door = fields.Many2many('smg.access_floor')
+    card_aceess_floor_door = fields.Many2many('smg.access_floor', string="Floor")
     card_access_door = fields.Selection([
         ('ground_floor','Ground Floor'),
         ('1st_floor','1st Floor'),
