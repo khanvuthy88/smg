@@ -33,10 +33,10 @@
                 </h1>
             </div>
             <group>
-              <field name="is_it_team" attrs="{'invisible':1}"/>
-              <field name="is_hr_team" attrs="{'invisible':1}"/>
-              <field name="is_odoo_team" attrs="{'invisible':1}"/>
-              <field name="is_mis_team" attrs="{'invisible':1}"/>
+              <field name="is_it_team"/>
+              <field name="is_hr_team"/>
+              <field name="is_odoo_team"/>
+              <field name="is_mis_team"/>
 
               <group string="Employee Info">
                 <field name="employee_id"/>
@@ -74,13 +74,13 @@
                 </group>
                 <group>
                   <group string="User info" >
-                    <field name="username" attrs="{'readonly':[('is_hr_team','=',True)]}"/>
-                    <field name="initial_password" attrs="{'readonly':[('is_hr_team','=',True)]}"/>
-                    <field name="initial_email" attrs="{'readonly':[('is_hr_team','=',True)]}"/>
+                    <field name="username" attrs="{'readonly':[('is_hr_team','=', True)]}"/>
+                    <field name="initial_password" attrs="{'readonly':[('is_hr_team','=', True)]}"/>
+                    <field name="initial_email" attrs="{'readonly':[('is_hr_team','=', True)]}"/>
                   </group>
                   <group string="Standard Drive">
-                      <field name="drive_p_permission_access" widget="selection" attrs="{'readonly':True}"/>
-                      <field name="drive_z_permission_access" widget="selection" attrs="{'readonly':True}"/>
+                      <field name="drive_p_permission_access" widget="selection" attrs="{'readonly':1}"/>
+                      <field name="drive_z_permission_access" widget="selection" attrs="{'readonly':1}"/>
                   </group>
                 </group>
 

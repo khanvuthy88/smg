@@ -139,11 +139,11 @@ class SMGUserInfo(models.Model):
     def _get_current_user_team(self):
         if self.current_user.has_group('smg_create_user.smg_create_user_it_team'):
             self.is_it_team = True
-        if self.current_user.has_group('smg_create_user.smg_create_user_hr_team'):
+        elif self.current_user.has_group('smg_create_user.smg_create_user_hr_team'):
             self.is_hr_team = True
-        if self.current_user.has_group('smg_create_user.smg_create_user_odoo_team'):
+        elif self.current_user.has_group('smg_create_user.smg_create_user_odoo_team'):
             self.is_odoo_team = True
-        if self.current_user.has_group('smg_create_user.smg_create_user_mis_team'):
+        else:
             self.is_mis_team = True
 
     @api.multi
