@@ -40,17 +40,17 @@
 
               <group string="Employee Info">
                 <field name="employee_id"/>
-                <field name="last_name" attrs="{'readonly':[('is_it_team','=',True)]}"/>
-                <field name="first_name" attrs="{'readonly':[('is_it_team','=',True)]}"/>
-                <field name="employee_id_number" attrs="{'readonly':[('is_it_team','=',True)]}"/>
-                <field name="telegram_id" attrs="{'readonly':[('is_it_team','=',True)]}"/>
-                <field name="start_date" attrs="{'readonly':[('is_it_team','=',True)]}"/>
+                <field name="last_name" attrs="{'readonly':[('is_hr_team','=',False)]}"/>
+                <field name="first_name" attrs="{'readonly':[('is_hr_team','=',False)]}"/>
+                <field name="employee_id_number" attrs="{'readonly':[('is_hr_team','=',False)]}"/>
+                <field name="telegram_id" attrs="{'readonly':[('is_hr_team','=',False)]}"/>
+                <field name="start_date" attrs="{'readonly':[('is_hr_team','=',False)]}"/>
               </group>
               <group string="Other info">
-                <field name="company_name"/>
-                <field name="department"/>
-                <field name="position"/>
-                <field name="manager"/>
+                <field name="company_name" attrs="{'readonly':[('is_hr_team','=',False)]}"/>
+                <field name="department" attrs="{'readonly':[('is_hr_team','=',False)]}"/>
+                <field name="position" attrs="{'readonly':[('is_hr_team','=',False)]}"/>
+                <field name="manager" attrs="{'readonly':[('is_hr_team','=',False)]}"/>
                 <field name="has_ticket" invisible="1"/>
               </group>
             </group>
@@ -74,9 +74,9 @@
                 </group>
                 <group>
                   <group string="User info" >
-                    <field name="username" attrs="{'readonly':[('is_hr_team','=', True)]}"/>
-                    <field name="initial_password" attrs="{'readonly':[('is_hr_team','=', True)]}"/>
-                    <field name="initial_email" attrs="{'readonly':[('is_hr_team','=', True)]}"/>
+                    <field name="username" attrs="{'readonly':[('is_it_team','=', False)]}"/>
+                    <field name="initial_password" attrs="{'readonly':[('is_it_team','=', False)]}"/>
+                    <field name="initial_email" attrs="{'readonly':[('is_it_team','=', False)]}"/>
                   </group>
                   <group string="Standard Drive">
                       <field name="drive_p_permission_access" widget="selection" attrs="{'readonly':1}"/>
@@ -89,7 +89,7 @@
               <page string="Odoo" groups="smg_create_user.smg_create_user_hr_team,smg_create_user.smg_create_user_odoo_team">
                 <group>
                   <header>
-                    <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state" attrs="{'invisible':[('odoo_standard_progress_state','!=','fwd_by_it')]}"/>
+                    <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state" attrs="{'invisible':[('odoo_standard_progress_state','!=','requested_by_head_department')]}"/>
                     <button class="btn-primary" string="Complete" type="object" name="odoo_state_complete_by_hr" attrs="{'invisible':[('odoo_standard_progress_state','!=','process_by_odoo_team')]}"/>
                     <field name="odoo_standard_progress_state" widget="statusbar"/>
                   </header>
