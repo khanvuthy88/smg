@@ -18,5 +18,11 @@
         <!--     </t> -->
         <!--   </dl> -->
         <!-- </template> -->
+
+        <template id="smg_create_user_style" name="SMG Create user style" inherit_id="web.assets_backend">
+            <xpath expr="link[last()]" position="after">
+                <link href="/smg_create_user/static/less/style.less" rel="stylesheet" type="text/less"/>
+            </xpath>
+        </template>
     </data>
 </odoo>

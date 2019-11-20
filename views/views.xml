@@ -19,7 +19,7 @@
       <field name="name">smg_create_user form</field>
       <field name="model">smg.user.info</field>
       <field name="arch" type="xml">
-        <form string="User list">
+        <form string="User list" id="smg_create_or_edit_user_form">
           <header>
             <field name="state" widget="statusbar" clickable="1"/>
             <button name="requested_by_hr" class="btn-primary" groups="smg_create_user.smg_create_user_hr_team" type="object" string="Confirm Req. User" attrs="{'invisible': ['|','|',('it_progress_state', '=', 'requested_by_hr'),('it_progress_state','=','process_by_it'),('it_progress_state','=','done')]}"/>
@@ -33,10 +33,11 @@
                 </h1>
             </div>
             <group>
-              <field name="is_it_team"/>
-              <field name="is_hr_team"/>
-              <field name="is_odoo_team"/>
-              <field name="is_mis_team"/>
+              <field name="is_it_team" invisible="1"/>
+              <field name="is_hr_team" invisible="1"/>
+              <field name="is_odoo_team" invisible="1"/>
+              <field name="is_mis_team" invisible="1"/>
+              <field name="current_user" invisible="1"/>
 
               <group string="Employee Info">
                 <field name="employee_id"/>

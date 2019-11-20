@@ -128,19 +128,20 @@ class SMGUserInfo(models.Model):
     # This field using in odoo tab for allow permission access to app
     user_odoo_standard_access = fields.Many2many('res.groups', domain=[('user_standard_acess', '=', True)])
     user_id = fields.Many2one('res.users')
+    user_id = fields.Many2one('res.users')
     activity_date_deadline = fields.Date(string='Next Activity Deadline', related='activity_ids.date_deadline',
                                          groups='base.group_portal,base.group_user')
-    is_it_team = fields.Boolean(compute='_get_current_user_team')
     is_hr_team = fields.Boolean(compute='_get_current_user_team')
+    is_it_team = fields.Boolean(compute='_get_current_user_team')
     is_odoo_team = fields.Boolean(compute='_get_current_user_team')
     is_mis_team = fields.Boolean(compute='_get_current_user_team')
 
     @api.depends('current_user')
     def _get_current_user_team(self):
-        if self.current_user.has_group('smg_create_user.smg_create_user_it_team'):
-            self.is_it_team = True
-        elif self.current_user.has_group('smg_create_user.smg_create_user_hr_team'):
+        if self.current_user.has_group('smg_create_user.smg_create_user_hr_team'):
             self.is_hr_team = True
+        elif self.current_user.has_group('smg_create_user.smg_create_user_it_team'):
+            self.is_it_team = True
         elif self.current_user.has_group('smg_create_user.smg_create_user_odoo_team'):
             self.is_odoo_team = True
         else:
@@ -328,10 +329,6 @@ class SMGUserInfo(models.Model):
                 'address_home_id': related_partner.id,
                 'user_id': self.user_id.id,
             })
-
-        # Update record user_id (Related user) in employee form to created user
-        # for record in self.employee_id:
-        #     record.write({'user_id': user_obj.id})
         return user_obj
 
 
@@ -403,8 +400,8 @@ class SMGEmployee(models.Model):
                 split_string = self.split_string(lower_string)
                 full_name = self.display_name.split(" ", 1)
                 username = '{}\{}'.format('SOMAGROUP', '.'.join(split_string))
-                first_name = full_name[0]
-                last_name = full_name[1]
+                last_name = full_name[0]
+                first_name = full_name[1]
                 password = 'smg@123'
                 email = '@{}'.format('somagroup.com.kh')
 
@@ -412,8 +409,8 @@ class SMGEmployee(models.Model):
                     # default_employee_id_number = self.smg_empid,
                     default_employee_id=self.id,
                     default_name=self.name,
+                    default_last_name=last_name.capitalize(),
                     default_first_name = first_name.isupper(),
-                    default_last_name = last_name.capitalize(),
                     default_department=self.department_id.id,
                     default_manager=self.parent_id.id,
                     default_position=self.job_id.id,

@@ -6,19 +6,19 @@
         <field name="sequence">3</field>
     </record>
 
+    <record id="smg_create_user_hr_team" model="res.groups">
+        <field name="name">HR Team</field>
+        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+        <field name="users" eval="[(4, ref('base.user_root'))]"/>
+        <field name="category_id" ref="smg_create_user.module_management"/>
+    </record>
+
     <record id="smg_create_user_it_team" model="res.groups">
         <field name="name">IT Team</field>
         <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
         <field name="users" eval="[(4, ref('base.user_root'))]"/>
         <field name="category_id" ref="smg_create_user.module_management"/>
         <field name="comment">IT Team group users</field>
-    </record>
-
-    <record id="smg_create_user_hr_team" model="res.groups">
-        <field name="name">HR Team</field>
-        <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
-        <field name="users" eval="[(4, ref('base.user_root'))]"/>
-        <field name="category_id" ref="smg_create_user.module_management"/>
     </record>
 
     <record id="smg_create_user_odoo_team" model="res.groups">
