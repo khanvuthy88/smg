@@ -88,8 +88,8 @@
               <page string="Odoo" groups="smg_create_user.smg_create_user_hr_team,smg_create_user.smg_create_user_odoo_team">
                 <group>
                   <header>
-                    <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state" attrs="{'invisible':['|',('odoo_standard_progress_state','=','draft'),('odoo_standard_progress_state','=','completed_by_hr')]}"/>
-                    <button class="btn-primary" string="Complete" type="object" name="odoo_state_complete_by_hr" attrs="{'invisible':[('odoo_standard_progress_state','!=','process_by_odoo_team')]}"/>
+                    <button class="btn-primary" string="Create Odoo User" type="object" name="odoo_complete_state" attrs="{'invisible':['|','|',('odoo_standard_progress_state','=','draft'),('odoo_standard_progress_state','=','completed_by_hr'),('odoo_standard_progress_state','=','process_by_odoo_team')]}"/>
+                    <button class="btn-primary" string="Complete" type="object" name="odoo_state_complete_by_hr" groups="smg_create_user.smg_create_user_hr_team" attrs="{'invisible':[('odoo_standard_progress_state','=','completed_by_hr')]}"/>
                     <field name="odoo_standard_progress_state" widget="statusbar"/>
                   </header>
                 </group>
