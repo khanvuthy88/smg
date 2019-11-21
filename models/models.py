@@ -320,8 +320,10 @@ class SMGUserInfo(models.Model):
         employee = self.env['hr.employee'].search([('id', '=', self.employee_id.id)])
         # Update record in res.partner by Related Partner (partner_id)
         related_partner = self.env['res.partner'].search([('id', 'in', [self.user_id.partner_id.id])])
+        hr_manager_role = env.ref('base.module_category_human_resources')
+
         for record in related_partner:
-            record.sudo().write({
+            record.sudo(hr_manager_role).write({
                 'parent_id': self.employee_id.address_id.id,
                 'mobile': self.employee_id.mobile_phone,
                 'email': self.employee_id.work_email
@@ -329,7 +331,7 @@ class SMGUserInfo(models.Model):
 
         # Update record user_id (Related user) and address_home_id (Private Address) field in employee form to created user
         for record in employee:
-            record.sudo().write({
+            record.sudo(hr_manager_role).write({
                 'address_home_id': related_partner.id,
                 'user_id': self.user_id.id,
             })
