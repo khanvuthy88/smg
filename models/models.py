@@ -46,24 +46,24 @@ class SMGUserInfo(models.Model):
         ]
         return progress_state_list
 
-    current_user = fields.Many2one('res.users', 'Current User', compute="_get_corrent_user_who_login")
+    current_user = fields.Many2one('res.users', compute="_compute_get_corrent_user_who_login")
     name = fields.Char(track_visibility='always')
-    state = fields.Selection([('new_user', 'New User'), ('user_movement', 'User Movement'), ('user_termination', 'User Termination')], 'State', default='new_user', track_visibility='always')
-    employee_id = fields.Many2one('hr.employee', string="Employee")
-    first_name = fields.Char(string="First name", readonly=[])
-    last_name = fields.Char(string='Last name')
+    state = fields.Selection([('new_user', 'New User'), ('user_movement', 'User Movement'), ('user_termination', 'User Termination')], default='new_user', track_visibility='always')
+    employee_id = fields.Many2one('hr.employee', "Employee")
+    first_name = fields.Char(readonly=[])
+    last_name = fields.Char()
     employee_id_number = fields.Char(string="Employee ID")
     telegram_id = fields.Char(string="Telegram ID")
     start_date = fields.Date(string="Start Date")
-    company_name = fields.Many2one('res.partner', string="Company name")
-    department = fields.Many2one('hr.department', string="Department")
-    position = fields.Many2one('hr.job', string="Position")
-    manager = fields.Many2one('hr.employee', string="Manager")
+    company_name = fields.Many2one('res.partner')
+    department = fields.Many2one('hr.department')
+    position = fields.Many2one('hr.job')
+    manager = fields.Many2one('hr.employee')
 
     # Create user notepad
-    username = fields.Char(string="User name")
-    initial_password = fields.Char(string="Initial Password")
-    initial_email = fields.Char(string="Initial Email")
+    username = fields.Char()
+    initial_password = fields.Char()
+    initial_email = fields.Char()
     it_progress_state = fields.Selection([
         ('draft', 'Draft'),
         ('requested_by_hr', 'Requested by HR'),
@@ -131,17 +131,17 @@ class SMGUserInfo(models.Model):
     user_id = fields.Many2one('res.users')
     activity_date_deadline = fields.Date(string='Next Activity Deadline', related='activity_ids.date_deadline',
                                          groups='base.group_portal,base.group_user')
-    is_hr_team = fields.Boolean(compute='_get_current_user_team')
-    is_it_team = fields.Boolean(compute='_get_current_user_team')
-    is_odoo_team = fields.Boolean(compute='_get_current_user_team')
-    is_mis_team = fields.Boolean(compute='_get_current_user_team')
+    is_hr_team = fields.Boolean(compute='_compute_get_current_user_team')
+    is_it_team = fields.Boolean(compute='_compute_get_current_user_team')
+    is_odoo_team = fields.Boolean(compute='_compute_get_current_user_team')
+    is_mis_team = fields.Boolean(compute='_compute_get_current_user_team')
 
     @api.multi
-    def _get_corrent_user_who_login(self):
+    def _compute_get_corrent_user_who_login(self):
         return  self.env.user
 
     @api.depends('current_user')
-    def _get_current_user_team(self):
+    def _compute_get_current_user_team(self):
         if self.current_user.has_group('smg_create_user.smg_create_user_hr_team'):
             self.is_hr_team = True
         elif self.current_user.has_group('smg_create_user.smg_create_user_it_team'):

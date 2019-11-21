@@ -1,11 +1,9 @@
 <odoo>
-  <data>
-
     <record model="ir.ui.view" id="smg_create_user_list">
       <field name="name">smg_create_user list</field>
       <field name="model">smg.user.info</field>
       <field name="arch" type="xml">
-        <tree string="User List">
+        <tree>
           <field name="name"/>
           <field name="employee_id"/>
           <field name="telegram_id"/>
@@ -33,11 +31,11 @@
                 </h1>
             </div>
             <group>
-              <field name="is_it_team"/>
-              <field name="is_hr_team"/>
-              <field name="is_odoo_team"/>
-              <field name="is_mis_team"/>
-              <field name="current_user"/>
+              <field name="is_it_team" invisible="1"/>
+              <field name="is_hr_team" invisible="1"/>
+              <field name="is_odoo_team" invisible="1"/>
+              <field name="is_mis_team" invisible="1"/>
+              <field name="current_user" invisible="1"/>
 
               <group string="Employee Info">
                 <field name="employee_id"/>
@@ -221,5 +219,4 @@
             action="smg_floor_action"
             parent="hr.menu_human_resources_configuration"
             sequence="1"/>
-  </data>
 </odoo>
