@@ -331,7 +331,7 @@ class SMGUserInfo(models.Model):
 
         # Update record user_id (Related user) and address_home_id (Private Address) field in employee form to created user
         for record in employee:
-            record.sudo(hr_manager_role).write({
+            record.sudo().write({
                 'address_home_id': related_partner.id,
                 'user_id': self.user_id.id,
             })
