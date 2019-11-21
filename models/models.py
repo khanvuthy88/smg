@@ -109,7 +109,7 @@ class SMGUserInfo(models.Model):
     peachtree = fields.Boolean(string='Peachtree')
     account_remark = fields.Text(string="Remark")
     ticket_ids = fields.One2many('helpdesk.ticket', 'create_user_info', 'Tickets')
-    has_ticket = fields.Boolean(string="Has ticket", compute="_get_ticket_by_self")
+    has_ticket = fields.Boolean(string="Has ticket", compute="_compute_get_ticket_by_self")
 
     # Access card field
     card_aceess_floor_door = fields.Many2many('smg.access_floor', string="Floor")
@@ -212,7 +212,7 @@ class SMGUserInfo(models.Model):
         return user
 
     @api.depends('ticket_ids')
-    def _get_ticket_by_self(self):
+    def _compute_get_ticket_by_self(self):
         for record in self:
             if not record.ticket_ids:
                 record.has_ticket = False
@@ -486,8 +486,8 @@ class SMGEmployee(models.Model):
 class SMGResgroup(models.Model):
     _inherit = ['res.groups']
 
-    user_standard_acess = fields.Boolean(string="User Standard Access", default=False)
-    user_grant_access = fields.Boolean(string="User Grant Access", default=False)
+    user_standard_acess = fields.Boolean(default=False)
+    user_grant_access = fields.Boolean(default=False)
 
 
 class SMGDriveAndOdoo(models.Model):
