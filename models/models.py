@@ -320,7 +320,7 @@ class SMGUserInfo(models.Model):
         employee = self.env['hr.employee'].search([('id', '=', self.employee_id.id)])
         # Update record in res.partner by Related Partner (partner_id)
         related_partner = self.env['res.partner'].search([('id', 'in', [self.user_id.partner_id.id])])
-        hr_manager_role = self.env.ref('base.module_category_human_resources')
+        hr_manager_role = self.env.ref('hr.group_hr_manager')
 
         for record in related_partner:
             record.sudo(hr_manager_role).write({
