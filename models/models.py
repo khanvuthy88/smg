@@ -323,7 +323,7 @@ class SMGUserInfo(models.Model):
         hr_manager_role = self.env.ref('hr.group_hr_manager')
 
         for record in related_partner:
-            record.sudo(hr_manager_role).write({
+            record.sudo().write({
                 'parent_id': self.employee_id.address_id.id,
                 'mobile': self.employee_id.mobile_phone,
                 'email': self.employee_id.work_email
