@@ -1,10 +1,20 @@
-form{
-    &#smg_create_or_edit_user_form{
-        .o_field_widget{
-            button{
-                &.o_arrow_button{
-                    background-color:#00a09d;
-                    color:#fff;
+
+.o_form_view{
+    .o_form_statusbar{
+        .o_statusbar_status[name="it_progress_state"]{
+            .o_arrow_button{
+                &.btn-primary{
+                    &.disabled{
+                        background-color: #00a09d;
+                        color:#ffffff;
+                        &:before{
+                           border-left-color: #00a09d;
+                           border-left: 11px solid #00a09d;
+                        }
+                        &:after{
+                            border-left-color: #00a09d;
+                        }
+                    }
                 }
             }
         }
